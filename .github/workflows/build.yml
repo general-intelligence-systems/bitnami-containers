@@ -5,7 +5,6 @@ on:
   workflow_call:
     inputs:
       build_all:
-        description: "Build all images (true) or only recent (false)"
         required: false
         type: boolean
         default: false
@@ -20,40 +19,26 @@ jobs:
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
       has_builds: ${{ steps.gen.outputs.has_builds }}
-      items: ${{ steps.gen.outputs.items }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
       - id: gen
         run: |
-          cutoff=0
-          if [ "${{ inputs.build_all || github.event_name == 'workflow_dispatch' }}" != "true" ]; then
-            cutoff=$(date -u -d '25 hours ago' +%s)
+          if [ "${{ inputs.build_all || github.event_name == 'workflow_dispatch' }}" = "true" ]; then
+            lines=$(./bin/dockerfile-commits)
+          else
+            lines=$(./bin/dockerfile-commits | ./bin/in-25-hours)
           fi
 
-          items=$(git ls-files '*/Dockerfile' | while read f; do
-            if [ "$cutoff" -eq 0 ] || [ "$(git log -1 --format=%at -- "$f")" -gt "$cutoff" ]; then
-              parsed=$(git log -1 --format=%s -- "$f" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
-              if [ -n "$parsed" ]; then
-                printf '{"name":"%s","tag":"%s","context":"%s"}\n' \
-                  "$(echo "$parsed" | cut -d' ' -f1)" \
-                  "$(echo "$parsed" | cut -d' ' -f2)" \
-                  "$(dirname "$f")"
-              fi
-            fi
-          done)
-
-          if [ -z "$items" ]; then
+          if [ -z "$lines" ]; then
             echo "has_builds=false" >> "$GITHUB_OUTPUT"
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
-            echo 'items=[]' >> "$GITHUB_OUTPUT"
           else
+            matrix=$(echo "$lines" | awk '{gsub(/\/Dockerfile$/,"",$1); printf "{\"name\":\"%s\",\"tag\":\"%s\",\"context\":\"%s\"}\n",$2,$3,$1}' | jq -sc '{include:.}')
             echo "has_builds=true" >> "$GITHUB_OUTPUT"
-            echo "matrix=$(echo "$items" | jq -sc '{"include":.}')" >> "$GITHUB_OUTPUT"
-            echo "items=$(echo "$items" | jq -sc '.')" >> "$GITHUB_OUTPUT"
+            echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
           fi
 
   build:
@@ -88,7 +73,6 @@ jobs:
     needs: [detect, build]
     if: always() && needs.detect.outputs.has_builds == 'true'
     uses: ./.github/workflows/index.yml
-    with:
-      items: ${{ needs.detect.outputs.items }}
     permissions:
+      packages: read
       contents: write

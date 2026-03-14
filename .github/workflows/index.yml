@@ -1,14 +1,11 @@
 name: Index
 
 on:
+  workflow_dispatch:
   workflow_call:
-    inputs:
-      items:
-        description: "JSON array of {name, tag} objects"
-        required: true
-        type: string
 
 permissions:
+  packages: read
   contents: write
 
 jobs:
@@ -16,28 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Generate README.md
         env:
-          ITEMS: ${{ inputs.items }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           owner="${{ github.repository_owner }}"
 
           cat > README.md << 'EOF'
           # Container Images
 
-          Auto-generated index of all container images published to GHCR.
-
-          ## Images
-
-          | Image | Tag | Pull Command |
-          |-------|-----|--------------|
+          | Image | Tags | Pull |
+          |-------|------|------|
           EOF
           sed -i 's/^          //' README.md
 
-          echo "$ITEMS" | jq -r '.[] | "| \(.name) | `\(.tag)` | `docker pull ghcr.io/'"$owner"'/\(.name):\(.tag)` |"' >> README.md
+          gh api --paginate "/users/$owner/packages?package_type=container" --jq '.[].name' | sort | while read pkg; do
+            tags=$(gh api --paginate "/users/$owner/packages/container/$(echo "$pkg" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ', ' | sed 's/,$//')
+            [ -z "$tags" ] && continue
+            latest=$(echo "$tags" | cut -d',' -f1 | xargs)
+            echo "| $pkg | \`$tags\` | \`docker pull ghcr.io/$owner/$pkg:$latest\` |" >> README.md
+          done
 
           echo "" >> README.md
           echo "_Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> README.md
