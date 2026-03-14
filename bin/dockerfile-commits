@@ -1,4 +1,6 @@
 #!/bin/sh
 git ls-tree -r --name-only main | grep '/Dockerfile$' | while read f; do
-  git log -1 --format=%s main -- "$f"
-done | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2:\3/p'
+  info=$(git log -1 --format='%s %at' main -- "$f")
+  parsed=$(echo "$info" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.* \([0-9]*\)$/\2 \3 \4/p')
+  [ -n "$parsed" ] && echo "$f $parsed"
+done
