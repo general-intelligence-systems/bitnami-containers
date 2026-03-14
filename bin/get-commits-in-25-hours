@@ -1,15 +1,15 @@
 #!/bin/sh
 cutoff=$(date -u -d '25 hours ago' +%s)
-git ls-files '*/Dockerfile' | while read f; do
-  epoch=$(git log -1 --format=%at -- "$f")
+git ls-tree -r --name-only main | grep '/Dockerfile$' | while read f; do
+  epoch=$(git log -1 --format=%at main -- "$f")
   [ -z "$epoch" ] && continue
   if [ "$epoch" -gt "$cutoff" ]; then
-    parsed=$(git log -1 --format=%s -- "$f" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
+    parsed=$(git log -1 --format=%s main -- "$f" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
     if [ -n "$parsed" ]; then
-      name=$(echo "$parsed" | cut -d' ' -f1)
-      tag=$(echo "$parsed" | cut -d' ' -f2)
-      context=$(dirname "$f")
-      printf '%s:%s:%s\n' "$name" "$tag" "$context"
+      printf '%s:%s:%s\n' \
+        "$(echo "$parsed" | cut -d' ' -f1)" \
+        "$(echo "$parsed" | cut -d' ' -f2)" \
+        "$(dirname "$f")"
     fi
   fi
 done
