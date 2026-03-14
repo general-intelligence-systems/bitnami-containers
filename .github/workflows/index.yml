@@ -21,23 +21,15 @@ jobs:
         run: |
           gh api --paginate "/users/$OWNER/packages?package_type=container" --jq '.[].name' | sort | while read name; do
             tags=$(gh api --paginate "/users/$OWNER/packages/container/$(echo "$name" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ',' | sed 's/,$//')
-            [ -n "$tags" ] && echo "$name,$tags"
-          done > packages.csv
+            [ -n "$tags" ] && echo "$name|$tags"
+          done > packages.dat
 
       - name: Render README.md
         env:
           OWNER: ${{ github.repository_owner }}
         run: |
-          ruby -rerb -rcsv -e '
-            owner = ENV["OWNER"]
-            packages = CSV.read("packages.csv").map { |row|
-              tags = row[1..]
-              { name: row[0], tags: tags.join(", "), latest: tags.first }
-            }
-            template = File.read("README.md.erb")
-            File.write("README.md", ERB.new(template, trim_mode: "-").result(binding))
-          '
-          rm -f packages.csv
+          ./bin/render-index
+          rm -f packages.dat
 
       - name: Commit and push
         run: |

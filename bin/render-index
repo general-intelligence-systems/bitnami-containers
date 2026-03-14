@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'erb'
+
+owner = ENV["OWNER"]
+packages = []
+
+File.readlines("packages.dat").each do |line|
+  parts = line.strip.split("|")
+  next if parts.length < 2
+  name = parts[0]
+  tags = parts[1].split(",")
+  next if tags.empty?
+  $stderr.puts "#{name}: #{tags.join(', ')}"
+  packages << { name: name, tags: tags.join(", "), latest: tags.first }
+end
+
+$stderr.puts "Total: #{packages.length} packages"
+
+template = File.read("README.md.erb")
+File.write("README.md", ERB.new(template, trim_mode: "-").result(binding))
