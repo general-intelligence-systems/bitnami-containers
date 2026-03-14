@@ -17,26 +17,24 @@ jobs:
       - name: Generate README.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
         run: |
-          owner="${{ github.repository_owner }}"
+          ruby -rerb -rjson -e '
+            owner = ENV["OWNER"]
+            raw = `gh api --paginate "/users/#{owner}/packages?package_type=container" 2>/dev/null`
+            pkgs = JSON.parse(raw)
+            packages = pkgs.map { |p|
+              name = p["name"]
+              versions = `gh api --paginate "/users/#{owner}/packages/container/#{name.gsub("/","%2F")}/versions" 2>/dev/null`
+              tags = JSON.parse(versions).flat_map { |v| v.dig("metadata","container","tags") || [] }
+              next if tags.empty?
+              { name: name, tags: tags.first(10).join(", "), latest: tags.first }
+            }.compact.sort_by { |p| p[:name] }
 
-          cat > README.md << 'EOF'
-          # Container Images
-
-          | Image | Tags | Pull |
-          |-------|------|------|
-          EOF
-          sed -i 's/^          //' README.md
-
-          gh api --paginate "/users/$owner/packages?package_type=container" --jq '.[].name' | sort | while read pkg; do
-            tags=$(gh api --paginate "/users/$owner/packages/container/$(echo "$pkg" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ', ' | sed 's/,$//')
-            [ -z "$tags" ] && continue
-            latest=$(echo "$tags" | cut -d',' -f1 | xargs)
-            echo "| $pkg | \`$tags\` | \`docker pull ghcr.io/$owner/$pkg:$latest\` |" >> README.md
-          done
-
-          echo "" >> README.md
-          echo "_Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> README.md
+            template = File.read("README.md.erb")
+            result = ERB.new(template, trim_mode: "-").result(binding)
+            File.write("README.md", result)
+          '
 
       - name: Commit and push
         run: |

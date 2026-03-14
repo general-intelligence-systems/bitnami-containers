@@ -1,0 +1,13 @@
+# Container Images
+
+Published to `ghcr.io/<%= owner %>`.
+
+## Images
+
+| Image | Tags | Pull |
+|-------|------|------|
+<% packages.each do |pkg| -%>
+| <%= pkg[:name] %> | `<%= pkg[:tags] %>` | `docker pull ghcr.io/<%= owner %>/<%= pkg[:name] %>:<%= pkg[:latest] %>` |
+<% end -%>
+
+_Last updated: <%= Time.now.utc.strftime('%Y-%m-%d %H:%M:%S UTC') %>_
