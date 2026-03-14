@@ -13,11 +13,8 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    outputs:
-      synced: ${{ steps.sync.outputs.synced }}
     steps:
       - name: Sync fork with upstream
-        id: sync
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -25,19 +22,10 @@ jobs:
             -X POST \
             /repos/${{ github.repository }}/merge-upstream \
             -f branch=main 2>&1) || true
-
           echo "$result"
-          merge_type=$(echo "$result" | jq -r '.merge_type // empty')
-
-          if [ "$merge_type" = "fast-forward" ] || [ "$merge_type" = "merge" ]; then
-            echo "synced=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "synced=false" >> "$GITHUB_OUTPUT"
-          fi
 
   build:
     needs: sync
-    if: needs.sync.outputs.synced == 'true'
     uses: ./.github/workflows/build.yml
     with:
       build_all: false
