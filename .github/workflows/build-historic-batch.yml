@@ -101,7 +101,8 @@ jobs:
               continue
             fi
 
-            git checkout "$sha" -- .
+            # Only checkout the image directory, not the whole tree
+            git checkout "$sha" -- "bitnami/${name}"
 
             context=$(find "bitnami/${name}" -name Dockerfile -path "*/${name}/*" 2>/dev/null | head -1 | xargs -r dirname)
             if [ -z "$context" ]; then
@@ -111,11 +112,12 @@ jobs:
               continue
             fi
 
+            echo "Building ${name}:${tag} from ${context}"
             if docker buildx build --push \
               --tag "ghcr.io/${{ github.repository_owner }}/${name}:${tag}" \
               "$context"; then
               built=$((built + 1))
-              echo "Successfully built $image"
+              echo "Successfully built ${name}:${tag}"
             else
               echo "::warning::Build failed for $image"
               failed="${failed}${image}\n"
