@@ -1,7 +1,14 @@
-name: Build and Push Docker Images
+name: Build
 
 on:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      build_all:
+        description: "Build all images (true) or only recent (false)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   packages: write
@@ -13,15 +20,22 @@ jobs:
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
       has_builds: ${{ steps.gen.outputs.has_builds }}
+      items: ${{ steps.gen.outputs.items }}
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - id: gen
         run: |
+          build_all="${{ inputs.build_all }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            build_all="true"
+          fi
+
           cutoff=0
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "$build_all" != "true" ]; then
             cutoff=$(date -u -d '25 hours ago' +%s)
           fi
 
@@ -42,10 +56,13 @@ jobs:
           if [ -z "$items" ]; then
             echo "has_builds=false" >> "$GITHUB_OUTPUT"
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo 'items=[]' >> "$GITHUB_OUTPUT"
           else
             matrix=$(echo "$items" | jq -sc '{"include":.}')
+            items_json=$(echo "$items" | jq -sc '.')
             echo "has_builds=true" >> "$GITHUB_OUTPUT"
             echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+            echo "items=$items_json" >> "$GITHUB_OUTPUT"
           fi
 
   build:
@@ -57,6 +74,8 @@ jobs:
       matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: docker/setup-buildx-action@v3
 
@@ -77,49 +96,8 @@ jobs:
   index:
     needs: [detect, build]
     if: always() && needs.detect.outputs.has_builds == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: where-the-magic-happens
-          fetch-depth: 0
-
-      - name: Generate README.md
-        run: |
-          owner="${{ github.repository_owner }}"
-          cat > README.md << 'HEADER'
-          # Container Images
-
-          Auto-generated index of all container images published to GHCR.
-
-          ## Images
-
-          | Image | Tag | Pull Command |
-          |-------|-----|--------------|
-          HEADER
-          sed -i 's/^          //' README.md
-
-          git ls-files '*/Dockerfile' | while read f; do
-            line=$(git log -1 --format=%s -- "$f")
-            parsed=$(echo "$line" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
-            if [ -n "$parsed" ]; then
-              name=$(echo "$parsed" | cut -d' ' -f1)
-              tag=$(echo "$parsed" | cut -d' ' -f2)
-              echo "| $name | \`$tag\` | \`docker pull ghcr.io/$owner/$name:$tag\` |"
-            fi
-          done >> README.md
-
-          echo "" >> README.md
-          echo "_Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> README.md
-
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update image index"
-            git push
-          else
-            echo "README unchanged, skipping commit"
-          fi
+    uses: ./.github/workflows/index.yml
+    with:
+      items: ${{ needs.detect.outputs.items }}
+    permissions:
+      contents: write
