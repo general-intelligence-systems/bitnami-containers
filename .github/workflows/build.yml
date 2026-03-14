@@ -29,26 +29,19 @@ jobs:
 
       - id: gen
         run: |
-          build_all="${{ inputs.build_all }}"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            build_all="true"
-          fi
-
           cutoff=0
-          if [ "$build_all" != "true" ]; then
+          if [ "${{ inputs.build_all || github.event_name == 'workflow_dispatch' }}" != "true" ]; then
             cutoff=$(date -u -d '25 hours ago' +%s)
           fi
 
           items=$(git ls-files '*/Dockerfile' | while read f; do
-            commit_epoch=$(git log -1 --format=%at -- "$f")
-            if [ "$commit_epoch" -gt "$cutoff" ]; then
-              line=$(git log -1 --format=%s -- "$f")
-              parsed=$(echo "$line" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
+            if [ "$cutoff" -eq 0 ] || [ "$(git log -1 --format=%at -- "$f")" -gt "$cutoff" ]; then
+              parsed=$(git log -1 --format=%s -- "$f" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
               if [ -n "$parsed" ]; then
-                name=$(echo "$parsed" | cut -d' ' -f1)
-                tag=$(echo "$parsed" | cut -d' ' -f2)
-                context=$(dirname "$f")
-                printf '{"name":"%s","tag":"%s","context":"%s"}\n' "$name" "$tag" "$context"
+                printf '{"name":"%s","tag":"%s","context":"%s"}\n' \
+                  "$(echo "$parsed" | cut -d' ' -f1)" \
+                  "$(echo "$parsed" | cut -d' ' -f2)" \
+                  "$(dirname "$f")"
               fi
             fi
           done)
@@ -58,11 +51,9 @@ jobs:
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'items=[]' >> "$GITHUB_OUTPUT"
           else
-            matrix=$(echo "$items" | jq -sc '{"include":.}')
-            items_json=$(echo "$items" | jq -sc '.')
             echo "has_builds=true" >> "$GITHUB_OUTPUT"
-            echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
-            echo "items=$items_json" >> "$GITHUB_OUTPUT"
+            echo "matrix=$(echo "$items" | jq -sc '{"include":.}')" >> "$GITHUB_OUTPUT"
+            echo "items=$(echo "$items" | jq -sc '.')" >> "$GITHUB_OUTPUT"
           fi
 
   build:

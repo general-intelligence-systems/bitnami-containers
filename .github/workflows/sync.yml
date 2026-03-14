@@ -28,7 +28,7 @@ jobs:
     needs: sync
     uses: ./.github/workflows/build.yml
     with:
-      build_all: false
+      build_all: ${{ github.event_name == 'workflow_dispatch' }}
     permissions:
       packages: write
       contents: write
