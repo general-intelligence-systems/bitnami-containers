@@ -4,7 +4,8 @@ require 'erb'
 owner = ENV["OWNER"]
 packages = []
 
-File.readlines("packages.dat").each do |line|
+if File.exist?("packages.dat") && File.size("packages.dat") > 0
+  File.readlines("packages.dat").each do |line|
   parts = line.strip.split("|")
   next if parts.length < 2
   name = parts[0]
@@ -12,6 +13,7 @@ File.readlines("packages.dat").each do |line|
   next if tags.empty?
   $stderr.puts "#{name}: #{tags.join(', ')}"
   packages << { name: name, tags: tags.join(", "), latest: tags.first }
+  end
 end
 
 $stderr.puts "Total: #{packages.length} packages"

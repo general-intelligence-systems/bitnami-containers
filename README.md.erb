@@ -4,10 +4,14 @@ Published to `ghcr.io/<%= owner %>`.
 
 ## Images
 
+<% if packages.empty? -%>
+_No packages published yet._
+<% else -%>
 | Image | Tags | Pull |
 |-------|------|------|
 <% packages.each do |pkg| -%>
 | <%= pkg[:name] %> | `<%= pkg[:tags] %>` | `docker pull ghcr.io/<%= owner %>/<%= pkg[:name] %>:<%= pkg[:latest] %>` |
+<% end -%>
 <% end -%>
 
 _Last updated: <%= Time.now.utc.strftime('%Y-%m-%d %H:%M:%S UTC') %>_

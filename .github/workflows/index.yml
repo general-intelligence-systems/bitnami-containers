@@ -20,7 +20,13 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           echo "Fetching packages for $OWNER..."
-          gh api --paginate "/orgs/$OWNER/packages?package_type=container" --jq '.[].name' | sort | while read name; do
+          if ! gh api --paginate "/orgs/$OWNER/packages" --jq '.[].name' > /tmp/names.txt; then
+            echo "API error or no packages found"
+            touch packages.dat
+            exit 0
+          fi
+          echo "Found $(wc -l < /tmp/names.txt) packages"
+          sort /tmp/names.txt | while read name; do
             echo "  $name"
             tags=$(gh api --paginate "/orgs/$OWNER/packages/container/$(echo "$name" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ',' | sed 's/,$//')
             [ -n "$tags" ] && echo "$name|$tags"
