@@ -1,0 +1,5 @@
+#!/bin/sh
+input="${1:?usage: image-sha <name:tag>}"
+name="${input%%:*}"
+tag="${input#*:}"
+git log --all --format='%H' --grep="\[bitnami/${name}\] Release ${tag}" -- "*/Dockerfile" | head -1
