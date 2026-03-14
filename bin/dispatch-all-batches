@@ -1,12 +1,15 @@
 #!/bin/sh
 set -e
 
-echo "Dispatching all 3 batch groups..."
+total=$(wc -l < data/last-12-month-images.txt)
+groups=$(( (total + 255) / 256 ))
 
-for group in 1 2 3; do
-  echo "Dispatching group $group..."
-  gh workflow run build-historic-batch.yml -f group="$group"
+echo "Dispatching $groups groups ($total images, 256 per group)..."
+
+for group in $(seq 1 $groups); do
+  echo "Dispatching group $group/$groups..."
+  gh workflow run build-historic-batch.yml -f group="$group" --ref where-the-magic-happens
   sleep 2
 done
 
-echo "All 3 groups dispatched."
+echo "All $groups groups dispatched."
