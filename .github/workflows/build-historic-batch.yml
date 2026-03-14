@@ -13,8 +13,8 @@ on:
           - "3"
 
 permissions:
-  packages: write
-  contents: write
+  actions: write
+  contents: read
 
 jobs:
   list-batches:
@@ -64,78 +64,14 @@ jobs:
         batch: ${{ fromJSON(needs.list-batches.outputs.batches) }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - uses: docker/setup-buildx-action@v3
-
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prepare batch
+      - name: Dispatch builds
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp "data/batches/${{ matrix.batch }}" /tmp/batch.txt
-          cp bin/image-sha /tmp/image-sha
-
-      - name: Build images in batch
-        run: |
-          failed=""
-          built=0
-          total=$(wc -l < /tmp/batch.txt)
-
           while IFS= read -r image; do
             [ -z "$image" ] && continue
-            name="${image%%:*}"
-            tag="${image#*:}"
-
-            echo "::group::Building $image ($((built+1))/$total)"
-
-            sha=$(/tmp/image-sha "$image")
-            if [ -z "$sha" ]; then
-              echo "::warning::Could not resolve SHA for $image, skipping"
-              failed="${failed}${image}\n"
-              echo "::endgroup::"
-              continue
-            fi
-
-            # Only checkout the image directory, not the whole tree
-            git checkout "$sha" -- "bitnami/${name}"
-
-            context=$(find "bitnami/${name}" -name Dockerfile -path "*/${name}/*" 2>/dev/null | head -1 | xargs -r dirname)
-            if [ -z "$context" ]; then
-              echo "::warning::Could not find Dockerfile context for $image, skipping"
-              failed="${failed}${image}\n"
-              echo "::endgroup::"
-              continue
-            fi
-
-            echo "Building ${name}:${tag} from ${context}"
-            if docker buildx build --push --provenance=false \
-              --tag "ghcr.io/${{ github.repository_owner }}/${name}:${tag}" \
-              "$context"; then
-              built=$((built + 1))
-              echo "Successfully built ${name}:${tag}"
-            else
-              echo "::warning::Build failed for $image"
-              failed="${failed}${image}\n"
-            fi
-
-            echo "::endgroup::"
-          done < /tmp/batch.txt
-
-          echo "Built $built/$total images"
-          if [ -n "$failed" ]; then
-            echo "::warning::Failed images:"
-            echo -e "$failed"
-          fi
-
-  index:
-    needs: [list-batches, batch]
-    if: always() && needs.list-batches.outputs.has_batches == 'true'
-    uses: ./.github/workflows/index.yml
-    permissions:
-      packages: read
-      contents: write
+            echo "Dispatching $image"
+            gh workflow run build-historic.yml -f image="$image" --ref ${{ github.ref_name }}
+            sleep 2
+          done < "data/batches/${{ matrix.batch }}"
