@@ -19,17 +19,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
         run: |
-          type=$(gh api "/users/$OWNER" --jq '.type')
-          if [ "$type" = "Organization" ]; then
-            prefix="/orgs/$OWNER"
-          else
-            prefix="/users/$OWNER"
-          fi
-
-          gh api --paginate "$prefix/packages?package_type=container" --jq '.[].name' | sort | while read name; do
-            tags=$(gh api --paginate "$prefix/packages/container/$(echo "$name" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ',' | sed 's/,$//')
+          echo "Fetching packages for $OWNER..."
+          gh api --paginate "/orgs/$OWNER/packages?package_type=container" --jq '.[].name' | sort | while read name; do
+            echo "  $name"
+            tags=$(gh api --paginate "/orgs/$OWNER/packages/container/$(echo "$name" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ',' | sed 's/,$//')
             [ -n "$tags" ] && echo "$name|$tags"
           done > packages.dat
+          echo "Wrote $(wc -l < packages.dat) packages to packages.dat"
+          cat packages.dat
 
       - name: Render README.md
         env:
