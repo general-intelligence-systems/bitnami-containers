@@ -8,8 +8,8 @@ on:
         required: true
         type: string
       image_filter:
-        description: "Optional image name to filter (e.g. redis). Leave blank to build all."
-        required: false
+        description: "Image name to build (e.g. redis, postgresql, mariadb)"
+        required: true
         type: string
 
 permissions:
@@ -29,10 +29,25 @@ jobs:
 
       - id: gen
         run: |
-          lines=$(./bin/dockerfile-commits ${{ inputs.sha }})
+          sha="${{ inputs.sha }}"
+          filter="${{ inputs.image_filter }}"
 
-          if [ -n "${{ inputs.image_filter }}" ]; then
-            lines=$(echo "$lines" | awk '$2 == "'"${{ inputs.image_filter }}"'"')
+          # Only look at Dockerfiles changed in the target commit
+          dockerfiles=$(git diff-tree --no-commit-id --name-only -r "$sha" | grep '/Dockerfile$')
+
+          lines=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            info=$(git log -1 --format='%s %at' "$sha" -- "$f")
+            parsed=$(echo "$info" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.* \([0-9]*\)$/\2 \3 \4/p')
+            [ -n "$parsed" ] && lines="${lines:+$lines
+          }$f $parsed"
+          done <<EOF
+          $dockerfiles
+          EOF
+
+          if [ -n "$filter" ]; then
+            lines=$(echo "$lines" | awk '$2 == "'"$filter"'"')
           fi
 
           if [ -z "$lines" ]; then
