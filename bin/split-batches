@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+src="data/last-12-month-images.txt"
+dir="data/batches"
+size=20
+
+rm -rf "$dir"
+mkdir -p "$dir"
+
+split -l "$size" -d -a 3 "$src" "$dir/batch-"
+
+count=$(ls "$dir"/batch-* | wc -l)
+echo "Created $count batch files of $size images each in $dir/"

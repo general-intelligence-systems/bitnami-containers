@@ -1,0 +1,136 @@
+name: Build Historic Batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: "Batch group to build (1=batch-000..255, 2=batch-256..511, 3=batch-512+)"
+        required: true
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+
+permissions:
+  packages: write
+  contents: write
+
+jobs:
+  list-batches:
+    runs-on: ubuntu-latest
+    outputs:
+      batches: ${{ steps.list.outputs.batches }}
+      has_batches: ${{ steps.list.outputs.has_batches }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: list
+        run: |
+          group="${{ inputs.group }}"
+          case "$group" in
+            1) start=0;   end=255 ;;
+            2) start=256;  end=511 ;;
+            3) start=512;  end=999 ;;
+          esac
+
+          batches="[]"
+          for i in $(seq $start $end); do
+            file=$(printf "batch-%03d" "$i")
+            if [ -f "data/batches/$file" ]; then
+              batches=$(echo "$batches" | jq -c --arg f "$file" '. + [$f]')
+            fi
+          done
+
+          count=$(echo "$batches" | jq 'length')
+          echo "Found $count batch files for group $group"
+
+          if [ "$count" -eq 0 ]; then
+            echo "has_batches=false" >> "$GITHUB_OUTPUT"
+            echo "batches=[]" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_batches=true" >> "$GITHUB_OUTPUT"
+            echo "batches=$batches" >> "$GITHUB_OUTPUT"
+          fi
+
+  batch:
+    needs: list-batches
+    if: needs.list-batches.outputs.has_batches == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        batch: ${{ fromJSON(needs.list-batches.outputs.batches) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build images in batch
+        run: |
+          failed=""
+          built=0
+          total=$(wc -l < "data/batches/${{ matrix.batch }}")
+
+          while IFS= read -r image; do
+            [ -z "$image" ] && continue
+            name="${image%%:*}"
+            tag="${image#*:}"
+
+            echo "::group::Building $image ($((built+1))/$total)"
+
+            sha=$(./bin/image-sha "$image")
+            if [ -z "$sha" ]; then
+              echo "::warning::Could not resolve SHA for $image, skipping"
+              failed="${failed}${image}\n"
+              echo "::endgroup::"
+              continue
+            fi
+
+            git checkout "$sha" -- .
+
+            context=$(find "bitnami/${name}" -name Dockerfile -path "*/${name}/*" 2>/dev/null | head -1 | xargs -r dirname)
+            if [ -z "$context" ]; then
+              echo "::warning::Could not find Dockerfile context for $image, skipping"
+              failed="${failed}${image}\n"
+              git checkout main -- .
+              echo "::endgroup::"
+              continue
+            fi
+
+            if docker buildx build --push \
+              --tag "ghcr.io/${{ github.repository_owner }}/${name}:${tag}" \
+              "$context"; then
+              built=$((built + 1))
+              echo "Successfully built $image"
+            else
+              echo "::warning::Build failed for $image"
+              failed="${failed}${image}\n"
+            fi
+
+            git checkout main -- .
+            echo "::endgroup::"
+          done < "data/batches/${{ matrix.batch }}"
+
+          echo "Built $built/$total images"
+          if [ -n "$failed" ]; then
+            echo "::warning::Failed images:"
+            echo -e "$failed"
+          fi
+
+  index:
+    needs: [list-batches, batch]
+    if: always() && needs.list-batches.outputs.has_batches == 'true'
+    uses: ./.github/workflows/index.yml
+    permissions:
+      packages: read
+      contents: write

@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+echo "Dispatching all 3 batch groups..."
+
+for group in 1 2 3; do
+  echo "Dispatching group $group..."
+  gh workflow run build-historic-batch.yml -f group="$group"
+  sleep 2
+done
+
+echo "All 3 groups dispatched."
