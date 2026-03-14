@@ -4,8 +4,6 @@ Published to `ghcr.io/general-intelligence-systems`.
 
 ## Images
 
-| Image | Tags | Pull |
-|-------|------|------|
-| {"message":"Invalid argument.","documentation_url":"https://docs.github.com/rest/packages/packages#list-packages-for-an-organization","status":"400"} | `{,   "message": "Not Found", ,   "documentation_url": "https://docs.github.com/rest", ,   "status": "404", }` | `docker pull ghcr.io/general-intelligence-systems/{"message":"Invalid argument.","documentation_url":"https://docs.github.com/rest/packages/packages#list-packages-for-an-organization","status":"400"}:{` |
+_No packages published yet._
 
-_Last updated: 2026-03-14 13:00:34 UTC_
+_Last updated: 2026-03-14 13:04:21 UTC_
