@@ -13,44 +13,22 @@ permissions:
   contents: write
 
 jobs:
-  detect:
+  prepare:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.read.outputs.images }}
-      has_images: ${{ steps.read.outputs.has_images }}
+      matrix: ${{ steps.read.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-
       - id: read
         run: |
-          batch="${{ inputs.batch }}"
-
-          if [ ! -f "$batch" ]; then
-            echo "::error::Batch file not found: $batch"
-            exit 1
-          fi
-
-          images=$(jq -R -s -c 'split("\n") | map(select(. != ""))' < "$batch")
-          count=$(echo "$images" | jq 'length')
-
-          echo "Batch $batch: found $count images"
-
-          if [ "$count" -eq 0 ]; then
-            echo "has_images=false" >> "$GITHUB_OUTPUT"
-            echo "images=[]" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_images=true" >> "$GITHUB_OUTPUT"
-            echo "images=$images" >> "$GITHUB_OUTPUT"
-          fi
+          echo "matrix=$(jq -R -s -c 'split("\n") | map(select(. != ""))' < "${{ inputs.batch }}")" >> "$GITHUB_OUTPUT"
 
   build:
-    needs: detect
-    if: needs.detect.outputs.has_images == 'true'
+    needs: prepare
     strategy:
       fail-fast: false
-      max-parallel: 10
       matrix:
-        image: ${{ fromJSON(needs.detect.outputs.images) }}
+        image: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     uses: ./.github/workflows/build-historic.yml
     with:
       image: ${{ matrix.image }}
