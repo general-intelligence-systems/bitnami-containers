@@ -4,74 +4,53 @@ on:
   workflow_dispatch:
     inputs:
       group:
-        description: "Batch group to build (1=batch-000..255, 2=batch-256..511, 3=batch-512+)"
+        description: "Group number (1-48). Each group builds 256 images."
         required: true
-        type: choice
-        options:
-          - "1"
-          - "2"
-          - "3"
+        type: number
 
 permissions:
-  actions: write
-  contents: read
+  packages: write
+  contents: write
 
 jobs:
-  list-batches:
+  detect:
     runs-on: ubuntu-latest
     outputs:
-      batches: ${{ steps.list.outputs.batches }}
-      has_batches: ${{ steps.list.outputs.has_batches }}
+      images: ${{ steps.slice.outputs.images }}
+      has_images: ${{ steps.slice.outputs.has_images }}
     steps:
       - uses: actions/checkout@v4
 
-      - id: list
+      - id: slice
         run: |
-          group="${{ inputs.group }}"
-          case "$group" in
-            1) start=0;   end=255 ;;
-            2) start=256;  end=511 ;;
-            3) start=512;  end=999 ;;
-          esac
+          group=${{ inputs.group }}
+          start=$(( (group - 1) * 256 + 1 ))
+          end=$(( group * 256 ))
 
-          batches="[]"
-          for i in $(seq $start $end); do
-            file=$(printf "batch-%03d" "$i")
-            if [ -f "data/batches/$file" ]; then
-              batches=$(echo "$batches" | jq -c --arg f "$file" '. + [$f]')
-            fi
-          done
+          images=$(sed -n "${start},${end}p" data/last-12-month-images.txt | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          count=$(echo "$images" | jq 'length')
 
-          count=$(echo "$batches" | jq 'length')
-          echo "Found $count batch files for group $group"
+          echo "Group $group: lines $start-$end, found $count images"
 
           if [ "$count" -eq 0 ]; then
-            echo "has_batches=false" >> "$GITHUB_OUTPUT"
-            echo "batches=[]" >> "$GITHUB_OUTPUT"
+            echo "has_images=false" >> "$GITHUB_OUTPUT"
+            echo "images=[]" >> "$GITHUB_OUTPUT"
           else
-            echo "has_batches=true" >> "$GITHUB_OUTPUT"
-            echo "batches=$batches" >> "$GITHUB_OUTPUT"
+            echo "has_images=true" >> "$GITHUB_OUTPUT"
+            echo "images=$images" >> "$GITHUB_OUTPUT"
           fi
 
-  batch:
-    needs: list-batches
-    if: needs.list-batches.outputs.has_batches == 'true'
-    runs-on: ubuntu-latest
+  build:
+    needs: detect
+    if: needs.detect.outputs.has_images == 'true'
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
-        batch: ${{ fromJSON(needs.list-batches.outputs.batches) }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Dispatch builds
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          while IFS= read -r image; do
-            [ -z "$image" ] && continue
-            echo "Dispatching $image"
-            gh workflow run build-historic.yml -f image="$image" --ref ${{ github.ref_name }}
-            sleep 2
-          done < "data/batches/${{ matrix.batch }}"
+        image: ${{ fromJSON(needs.detect.outputs.images) }}
+    uses: ./.github/workflows/build-historic.yml
+    with:
+      image: ${{ matrix.image }}
+    permissions:
+      packages: write
+      contents: write
