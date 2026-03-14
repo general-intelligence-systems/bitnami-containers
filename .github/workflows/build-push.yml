@@ -1,0 +1,125 @@
+name: Build and Push Docker Images
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+      has_builds: ${{ steps.gen.outputs.has_builds }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: gen
+        run: |
+          cutoff=0
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            cutoff=$(date -u -d '25 hours ago' +%s)
+          fi
+
+          items=$(git ls-files '*/Dockerfile' | while read f; do
+            commit_epoch=$(git log -1 --format=%at -- "$f")
+            if [ "$commit_epoch" -gt "$cutoff" ]; then
+              line=$(git log -1 --format=%s -- "$f")
+              parsed=$(echo "$line" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
+              if [ -n "$parsed" ]; then
+                name=$(echo "$parsed" | cut -d' ' -f1)
+                tag=$(echo "$parsed" | cut -d' ' -f2)
+                context=$(dirname "$f")
+                printf '{"name":"%s","tag":"%s","context":"%s"}\n' "$name" "$tag" "$context"
+              fi
+            fi
+          done)
+
+          if [ -z "$items" ]; then
+            echo "has_builds=false" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+          else
+            matrix=$(echo "$items" | jq -sc '{"include":.}')
+            echo "has_builds=true" >> "$GITHUB_OUTPUT"
+            echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.has_builds == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ matrix.tag }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest
+
+  index:
+    needs: [detect, build]
+    if: always() && needs.detect.outputs.has_builds == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: where-the-magic-happens
+          fetch-depth: 0
+
+      - name: Generate README.md
+        run: |
+          owner="${{ github.repository_owner }}"
+          cat > README.md << 'HEADER'
+          # Container Images
+
+          Auto-generated index of all container images published to GHCR.
+
+          ## Images
+
+          | Image | Tag | Pull Command |
+          |-------|-----|--------------|
+          HEADER
+          sed -i 's/^          //' README.md
+
+          git ls-files '*/Dockerfile' | while read f; do
+            line=$(git log -1 --format=%s -- "$f")
+            parsed=$(echo "$line" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2 \3/p')
+            if [ -n "$parsed" ]; then
+              name=$(echo "$parsed" | cut -d' ' -f1)
+              tag=$(echo "$parsed" | cut -d' ' -f2)
+              echo "| $name | \`$tag\` | \`docker pull ghcr.io/$owner/$name:$tag\` |"
+            fi
+          done >> README.md
+
+          echo "" >> README.md
+          echo "_Last updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> README.md
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update image index"
+            git push
+          else
+            echo "README unchanged, skipping commit"
+          fi

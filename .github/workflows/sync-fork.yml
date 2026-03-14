@@ -1,0 +1,33 @@
+name: Sync Fork
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync fork with upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          result=$(gh api \
+            -X POST \
+            /repos/${{ github.repository }}/merge-upstream \
+            -f branch=main 2>&1) || true
+
+          echo "$result"
+          merge_type=$(echo "$result" | jq -r '.merge_type // empty')
+
+          if [ "$merge_type" = "fast-forward" ] || [ "$merge_type" = "merge" ]; then
+            echo "Upstream changes merged ($merge_type), triggering build"
+            gh workflow run build-push.yml --repo ${{ github.repository }}
+          else
+            echo "Already up to date, skipping build"
+          fi

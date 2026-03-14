@@ -1,0 +1,4 @@
+#!/bin/sh
+git ls-files '*/Dockerfile' | while read f; do
+  git log -1 --format=%s -- "$f"
+done | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.*/\2:\3/p'
