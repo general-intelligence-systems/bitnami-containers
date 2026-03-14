@@ -3,10 +3,10 @@ name: Build Historic Batch
 on:
   workflow_dispatch:
     inputs:
-      group:
-        description: "Group number (1-48). Each group builds 256 images."
+      batch:
+        description: "Path to batch file (e.g. data/batches/batch-000)"
         required: true
-        type: number
+        type: string
 
 permissions:
   packages: write
@@ -16,21 +16,24 @@ jobs:
   detect:
     runs-on: ubuntu-latest
     outputs:
-      images: ${{ steps.slice.outputs.images }}
-      has_images: ${{ steps.slice.outputs.has_images }}
+      images: ${{ steps.read.outputs.images }}
+      has_images: ${{ steps.read.outputs.has_images }}
     steps:
       - uses: actions/checkout@v4
 
-      - id: slice
+      - id: read
         run: |
-          group=${{ inputs.group }}
-          start=$(( (group - 1) * 256 + 1 ))
-          end=$(( group * 256 ))
+          batch="${{ inputs.batch }}"
 
-          images=$(sed -n "${start},${end}p" data/last-12-month-images.txt | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          if [ ! -f "$batch" ]; then
+            echo "::error::Batch file not found: $batch"
+            exit 1
+          fi
+
+          images=$(jq -R -s -c 'split("\n") | map(select(. != ""))' < "$batch")
           count=$(echo "$images" | jq 'length')
 
-          echo "Group $group: lines $start-$end, found $count images"
+          echo "Batch $batch: found $count images"
 
           if [ "$count" -eq 0 ]; then
             echo "has_images=false" >> "$GITHUB_OUTPUT"
