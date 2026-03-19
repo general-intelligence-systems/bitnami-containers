@@ -1,0 +1,57 @@
+name: Build Custom Images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [where-the-magic-happens]
+    paths:
+      - "custom-images/**"
+
+permissions:
+  packages: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+      has_builds: ${{ steps.gen.outputs.has_builds }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: gen
+        run: |
+          matrix=$(find custom-images -name Dockerfile -printf '%P\n' \
+            | while read rel; do
+                name=$(echo "$rel" | cut -d/ -f1)
+                tag=$(echo "$rel" | cut -d/ -f2)-custom
+                context="custom-images/$(dirname "$rel")"
+                echo "{\"name\":\"$name\",\"tag\":\"$tag\",\"context\":\"$context\"}"
+              done \
+            | jq -sc '{include:.}')
+          if [ "$(echo "$matrix" | jq '.include | length')" -gt 0 ]; then
+            echo "has_builds=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_builds=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.has_builds == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ matrix.tag }}
