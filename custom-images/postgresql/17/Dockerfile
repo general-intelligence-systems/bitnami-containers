@@ -19,9 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -SsLf -o /tmp/pgvector.tar.gz \
 # ── TimescaleDB (compile from source) ─────────────────────────────
 # TimescaleDB uses CMake + bootstrap, not a plain Makefile.
 RUN curl --retry 3 --retry-delay 5 -SsLf -o /tmp/timescaledb.tar.gz \
-      https://github.com/timescale/timescaledb/archive/refs/tags/2.26.2.tar.gz && \
+      https://github.com/timescale/timescaledb/archive/refs/tags/2.25.2.tar.gz && \
     tar xzf /tmp/timescaledb.tar.gz -C /tmp && \
-    cd /tmp/timescaledb-2.26.2 && \
+    cd /tmp/timescaledb-2.25.2 && \
     ./bootstrap -DREGRESS_CHECKS=OFF -DWARNINGS_AS_ERRORS=OFF && \
     cd build && make && make install && \
     cd / && rm -rf /tmp/timescaledb-* /tmp/timescaledb.tar.gz
