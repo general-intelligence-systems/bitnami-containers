@@ -1,7 +1,22 @@
 #!/bin/sh
 ref="${1:-origin/main}"
+
+# A bad ref used to be invisible: the pipeline's status comes from the
+# trailing `while`, so `git ls-tree` failing just produced no lines and the
+# caller saw "nothing to build". That is how the nightly build did nothing
+# for months. Fail loudly instead.
+git rev-parse --verify --quiet "$ref^{commit}" >/dev/null || {
+  echo "dockerfile-commits: no such ref: $ref" >&2
+  exit 1
+}
+
 git ls-tree -r --name-only "$ref" | grep '/Dockerfile$' | while read f; do
   info=$(git log -1 --format='%s %at' "$ref" -- "$f")
   parsed=$(echo "$info" | sed -n 's/.*\[\(bitnami\/\)\?\([^]]*\)\] Release \([^ ]*\) (.* \([0-9]*\)$/\2 \3 \4/p')
-  [ -n "$parsed" ] && echo "$f $parsed"
+  # `if`, not `&&`: a non-matching LAST file (e.g. our own custom-images
+  # Dockerfiles, which carry hand-written commit messages) made the loop
+  # exit 1, and `lines=$(...)` under `bash -e` then killed the detect job.
+  if [ -n "$parsed" ]; then
+    echo "$f $parsed"
+  fi
 done
