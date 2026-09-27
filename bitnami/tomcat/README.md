@@ -13,6 +13,14 @@ docker run --name tomcat bitnami/tomcat:latest
 
 You can find the default credentials and available configuration options in the [Environment Variables](#environment-variables) section.
 
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/tomcat/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/tomcat/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/tomcat).
+
 ## Why use Bitnami Secure Images?
 
 Those are hardened, minimal CVE images built and maintained by Bitnami. Bitnami Secure Images are based on the cloud-optimized, security-hardened enterprise [OS Photon Linux](https://vmware.github.io/photon/). Why choose BSI images?
@@ -45,10 +53,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 ## Get this image
 
 The Bitnami Apache Tomcat Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
-
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/tomcat).
 
 ## Persisting your application
 
@@ -99,12 +103,12 @@ The following tables list the main variables you can set.
 | `TOMCAT_AJP_PORT_NUMBER`         | Tomcat AJP port number.                                                               | `8009`                                                                                                                                                       |
 | `TOMCAT_USERNAME`                | Tomcat username.                                                                      | `manager`                                                                                                                                                    |
 | `TOMCAT_PASSWORD`                | Tomcat password.                                                                      | `nil`                                                                                                                                                        |
-| `TOMCAT_ALLOW_REMOTE_MANAGEMENT` | Whether to allow connections from remote addresses to the Tomcat manager application. | `yes`                                                                                                                                                        |
+| `TOMCAT_ALLOW_REMOTE_MANAGEMENT` | Whether to allow connections from remote addresses to the Tomcat manager application. | `no`                                                                                                                                                         |
 | `TOMCAT_ENABLE_AUTH`             | Whether to enable authentication for Tomcat manager applications.                     | `yes`                                                                                                                                                        |
 | `TOMCAT_ENABLE_AJP`              | Whether to enable the Tomcat AJP connector.                                           | `no`                                                                                                                                                         |
 | `TOMCAT_START_RETRIES`           | The number or retries while waiting for Catalina to start.                            | `12`                                                                                                                                                         |
 | `TOMCAT_EXTRA_JAVA_OPTS`         | Additional Java settings for Tomcat.                                                  | `nil`                                                                                                                                                        |
-| `TOMCAT_INSTALL_DEFAULT_WEBAPPS` | Whether to add default webapps (ROOT, manager, host-manager, etc.) for deployment.    | `yes`                                                                                                                                                        |
+| `TOMCAT_INSTALL_DEFAULT_WEBAPPS` | Whether to add default webapps (ROOT, manager, host-manager, etc.) for deployment.    | `no`                                                                                                                                                         |
 | `JAVA_OPTS`                      | Java runtime parameters.                                                              | `-Djava.awt.headless=true -XX:+UseG1GC -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true -Duser.home=${TOMCAT_HOME}` |
 
 #### Read-only environment variables
@@ -151,19 +155,7 @@ The Bitnami Apache Tomcat Docker image from the [Bitnami Secure Images](https://
 
 ## Logging
 
-The Bitnami Apache Tomcat Docker image sends the container logs to the `stdout`. To view the logs:
-
-```console
-docker logs tomcat
-```
-
-or using Docker Compose:
-
-```console
-docker-compose logs tomcat
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami Apache Tomcat Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Notable Changes
 

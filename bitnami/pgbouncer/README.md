@@ -11,7 +11,11 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 docker run --name pgbouncer bitnami/pgbouncer:latest
 ```
 
-**Warning**: This quick setup is only intended for development environments. You are encouraged to change the insecure default credentials and check out the available configuration options in the [Configuration](#configuration) section for a more secure deployment.
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/pgbouncer/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/pgbouncer/docker-compose.yml)
 
 ## Why use Bitnami Secure Images?
 
@@ -42,10 +46,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 
 The Bitnami PgBouncer Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
 
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes.
-
 ## Configuration
 
 The following section describes the supported environment variables
@@ -75,7 +75,7 @@ The following tables list the main variables you can set.
 | `PGBOUNCER_QUERY_WAIT_TIMEOUT`        | PgBouncer maximum time queries are allowed to spend waiting for execution (default: 120).                                                                                                  | `nil`                   |
 | `PGBOUNCER_MAX_CLIENT_CONN`           | PgBouncer maximum number of client connections allowed (default: 120).                                                                                                                     | `nil`                   |
 | `PGBOUNCER_MAX_DB_CONNECTIONS`        | PgBouncer maximum number of database connections allowed (default: 0).                                                                                                                     | `nil`                   |
-| `PGBOUNCER_IDLE_TRANSACTION_TIMEOUT`  | PgBouncer maximum time for a client to be in 'idle in transaction' state (default: 0.0).                                                                                                   | `nil`                   |
+| `PGBOUNCER_IDLE_TRANSACTION_TIMEOUT`  | PgBouncer maximum time for a client to be in 'idle in transaction' state  (default: 0.0).                                                                                                  | `nil`                   |
 | `PGBOUNCER_SERVER_IDLE_TIMEOUT`       | PgBouncer maximum time in seconds a server connection can be idle. If 0 then the timeout is disabled (default: 600).                                                                       | `nil`                   |
 | `PGBOUNCER_SERVER_RESET_QUERY`        | PgBouncer query sent to server on connection release before making it available to other clients (default: DISCARD ALL).                                                                   | `nil`                   |
 | `PGBOUNCER_DEFAULT_POOL_SIZE`         | PgBouncer maximum server connections to allow per user/database pair (default: 20).                                                                                                        | `nil`                   |

@@ -3,7 +3,7 @@
 
 FROM docker.io/bitnami/minideb:bookworm AS builder
 
-ARG DOWNLOADS_URL="downloads.bitnami.com/files/stacksmith"
+ARG DOWNLOADS_URL="https://downloads.bitnami.com/files/stacksmith"
 ARG TARGETARCH
 
 ENV OS_ARCH="${TARGETARCH:-amd64}"
@@ -17,41 +17,41 @@ RUN --mount=type=secret,id=downloads_url,env=SECRET_DOWNLOADS_URL \
     DOWNLOADS_URL=${SECRET_DOWNLOADS_URL:-${DOWNLOADS_URL}} ; \
     mkdir -p /tmp/bitnami/pkg/cache/ ; cd /tmp/bitnami/pkg/cache/ || exit 1 ; \
     COMPONENTS=( \
-      "oras-1.3.1-1-linux-${OS_ARCH}-debian-12" \
+      "oras-1.3.4-1-linux-${OS_ARCH}-debian-12" \
     ) ; \
     for COMPONENT in "${COMPONENTS[@]}"; do \
       if [ ! -f "${COMPONENT}.tar.gz" ]; then \
-        curl -SsLf "https://${DOWNLOADS_URL}/${COMPONENT}.tar.gz" -O ; \
-        curl -SsLf "https://${DOWNLOADS_URL}/${COMPONENT}.tar.gz.sha256" -O ; \
+        curl -SsLf "${DOWNLOADS_URL}/${COMPONENT}.tar.gz" -O ; \
       fi ; \
-      sha256sum -c "${COMPONENT}.tar.gz.sha256" ; \
+      sha256sum -c "/opt/bitnami/checksums/${COMPONENT}.tar.gz.sha256" ; \
       tar -zxf "${COMPONENT}.tar.gz" -C /opt/bitnami --strip-components=2 --no-same-owner ; \
-      rm -rf "${COMPONENT}".tar.gz{,.sha256} ; \
-    done
+      rm -rf "${COMPONENT}".tar.gz ; \
+    done ; \
+    rm -rf /opt/bitnami/checksums ;
 RUN uninstall_packages curl
 
 ######
 
 FROM scratch
 
-ARG DOWNLOADS_URL="downloads.bitnami.com/files/stacksmith"
+ARG DOWNLOADS_URL="https://downloads.bitnami.com/files/stacksmith"
 ARG TARGETARCH
 
 ENV OS_ARCH="${TARGETARCH:-amd64}"
 
 LABEL org.opencontainers.image.base.name="scratch" \
-      org.opencontainers.image.created="2026-04-08T07:24:16Z" \
+      org.opencontainers.image.created="2026-09-02T05:07:27Z" \
       org.opencontainers.image.description="Application packaged by Broadcom, Inc." \
       org.opencontainers.image.title="oras" \
       org.opencontainers.image.vendor="Broadcom, Inc." \
-      org.opencontainers.image.version="1.3.1"
+      org.opencontainers.image.version="1.3.4"
 
 COPY rootfs /
 COPY --from=builder /opt/bitnami/oras/.spdx-oras.spdx /opt/bitnami/oras/.spdx-oras.spdx
 COPY --from=builder /opt/bitnami/oras/bin/oras /opt/bitnami/oras/bin/oras
 COPY --from=builder /opt/bitnami/oras/licenses /opt/bitnami/oras/licenses
 
-ENV APP_VERSION="1.3.1" \
+ENV APP_VERSION="1.3.4" \
     BITNAMI_APP_NAME="oras" \
     IMAGE_REVISION="1" \
     PATH="/opt/bitnami/oras/bin:$PATH"

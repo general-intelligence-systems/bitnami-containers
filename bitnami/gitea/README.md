@@ -11,6 +11,14 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 docker run --name gitea bitnami/gitea:latest
 ```
 
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/gitea/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/gitea/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/gitea).
+
 ## Why use Bitnami Secure Images?
 
 Those are hardened, minimal CVE images built and maintained by Bitnami. Bitnami Secure Images are based on the cloud-optimized, security-hardened enterprise [OS Photon Linux](https://vmware.github.io/photon/). Why choose BSI images?
@@ -39,10 +47,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 ## Get this image
 
 The Bitnami Gitea Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
-
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/gitea).
 
 ## Persisting your application
 
@@ -74,7 +78,7 @@ The following tables list the main variables you can set.
 | `GITEA_LOG_MODE`                                | Gitea log mode.                                                                                                   | `nil`                                                    |
 | `GITEA_LOG_ROUTER`                              | Gitea log router.                                                                                                 | `nil`                                                    |
 | `GITEA_ADMIN_USER`                              | Admin username.                                                                                                   | `bn_user`                                                |
-| `GITEA_ADMIN_PASSWORD`                          | Admin password.                                                                                                   | `bitnami`                                                |
+| `GITEA_ADMIN_PASSWORD`                          | Admin password.                                                                                                   | `nil`                                                    |
 | `GITEA_ADMIN_EMAIL`                             | Admin user email.                                                                                                 | `user@bitnami.org`                                       |
 | `GITEA_APP_NAME`                                | Application name, used in the page title                                                                          | `Gitea: Git with a cup of tea`                           |
 | `GITEA_RUN_MODE`                                | Application run mode, affects performance and debugging. Either "dev", "prod" or "test".                          | `prod`                                                   |
@@ -82,11 +86,14 @@ The following tables list the main variables you can set.
 | `GITEA_SSH_DOMAIN`                              | Domain name of this server, used for displayed clone URL.                                                         | `${GITEA_DOMAIN}`                                        |
 | `GITEA_SSH_LISTEN_PORT`                         | Port for the built-in SSH server.                                                                                 | `2222`                                                   |
 | `GITEA_SSH_PORT`                                | SSH port displayed in clone URL.                                                                                  | `${GITEA_SSH_LISTEN_PORT}`                               |
+| `GITEA_HTTP_ADDR`                               | Gitea HTTP listen address                                                                                         | `0.0.0.0`                                                |
 | `GITEA_HTTP_PORT`                               | Gitea HTTP listen port                                                                                            | `3000`                                                   |
 | `GITEA_PROTOCOL`                                | [http, https, fcgi, http+unix, fcgi+unix]                                                                         | `http`                                                   |
 | `GITEA_ROOT_URL`                                | Overwrite the automatically generated public URL. This is useful if the internal and the external URL don't match | `${GITEA_PROTOCOL}://${GITEA_DOMAIN}:${GITEA_HTTP_PORT}` |
-| `GITEA_PASSWORD_HASH_ALGO`                      | The hash algorithm to use [argon2, pbkdf2, scrypt, bcrypt], argon2 will spend more memory than others.            | `pbkdf2`                                                 |
+| `GITEA_PASSWORD_HASH_ALGO`                      | The hash algorithm to use [argon2, pbkdf2, pbkdf2_hi, scrypt, bcrypt], argon2 will spend more memory than others. | `pbkdf2_hi`                                              |
 | `GITEA_LFS_START_SERVER`                        | Enables Git LFS support                                                                                           | `false`                                                  |
+| `GITEA_REVERSE_PROXY_TRUSTED_PROXIES`           | List of IPs to trust when reading X-Forwarded-* headers.                                                          | `nil`                                                    |
+| `GITEA_REVERSE_PROXY_LIMIT`                     | How many reverse‑proxy headers Gitea will trust.                                                                  | `1`                                                      |
 | `GITEA_ENABLE_OPENID_SIGNIN`                    | Enable OpenID sign-in.                                                                                            | `false`                                                  |
 | `GITEA_ENABLE_OPENID_SIGNUP`                    | Enable OpenID sign-up.                                                                                            | `false`                                                  |
 | `GITEA_DATABASE_TYPE`                           | The database type in use [mysql, postgres].                                                                       | `postgres`                                               |
@@ -101,7 +108,7 @@ The following tables list the main variables you can set.
 | `GITEA_SMTP_ENABLED`                            | Enable to use a mail service.                                                                                     | `false`                                                  |
 | `GITEA_SMTP_HOST`                               | SMTP mail host address (example: smtp.gitea.io).                                                                  | `nil`                                                    |
 | `GITEA_SMTP_PORT`                               | SMTP mail port (example: 587).                                                                                    | `nil`                                                    |
-| `GITEA_SMTP_FROM`                               | Mail from address, RFC 5322. This can be just an email address, or the "Name" email@example.com format.           | `nil`                                                    |
+| `GITEA_SMTP_FROM`                               | Mail from address, RFC 5322. This can be just an email address, or the "Name" <email@example.com> format.         | `nil`                                                    |
 | `GITEA_SMTP_USER`                               | Username of mailing user (usually the senders e-mail address).                                                    | `nil`                                                    |
 | `GITEA_SMTP_PASSWORD`                           | Password of mailing user. Use "your password" for quoting if you use special characters in the password.          | `nil`                                                    |
 | `GITEA_OAUTH2_CLIENT_AUTO_REGISTRATION_ENABLED` | Password of mailing user. Use "your password" for quoting if you use special characters in the password.          | `false`                                                  |
@@ -147,13 +154,7 @@ The Bitnami Gitea Docker image from the [Bitnami Secure Images](https://go-vmwar
 
 ## Logging
 
-The Bitnami Gitea Docker image sends the container logs to `stdout`. To view the logs:
-
-```console
-docker logs gitea
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami Gitea Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## License
 

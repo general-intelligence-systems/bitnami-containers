@@ -7,13 +7,19 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 
 ## TL;DR
 
-Use this quick command to run the container.
-
 ```console
 docker run --name neo4j bitnami/neo4j:latest
 ```
 
 You can find the default credentials and available configuration options in the [Environment Variables](#environment-variables) section.
+
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/neo4j/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/neo4j/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/neo4j).
 
 ## Why use Bitnami Secure Images?
 
@@ -39,10 +45,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 ## Get this image
 
 The Bitnami Neo4j Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
-
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes.
 
 ## Persisting your application
 
@@ -70,25 +72,41 @@ The following tables list the main variables you can set.
 
 #### Customizable environment variables
 
-| Name                                      | Description                                                                                                                                   | Default Value              |
-|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
-| `NEO4J_HOST`                              | Hostname used to configure Neo4j advertised address. It can be either an IP or a domain. If left empty, it will be resolved to the machine IP | `nil`                      |
-| `NEO4J_BIND_ADDRESS`                      | Neo4j bind address                                                                                                                            | `0.0.0.0`                  |
-| `NEO4J_ALLOW_UPGRADE`                     | Allow automatic schema upgrades                                                                                                               | `true`                     |
-| `NEO4J_PASSWORD`                          | Neo4j password.                                                                                                                               | `bitnami1`                 |
-| `NEO4J_APOC_IMPORT_FILE_ENABLED`          | Allow importing files using the apoc library                                                                                                  | `true`                     |
-| `NEO4J_APOC_IMPORT_FILE_USE_NEO4J_CONFIG` | Use neo4j configuration with the apoc library                                                                                                 | `false`                    |
-| `NEO4J_BOLT_PORT_NUMBER`                  | Port used for the bolt protocol.                                                                                                              | `7687`                     |
-| `NEO4J_HTTP_PORT_NUMBER`                  | Port used for the http protocol.                                                                                                              | `7474`                     |
-| `NEO4J_HTTPS_PORT_NUMBER`                 | Port used for the https protocol.                                                                                                             | `7473`                     |
-| `NEO4J_BOLT_ADVERTISED_PORT_NUMBER`       | Advertised port for the bolt protocol.                                                                                                        | `$NEO4J_BOLT_PORT_NUMBER`  |
-| `NEO4J_HTTP_ADVERTISED_PORT_NUMBER`       | Advertised port for the http protocol.                                                                                                        | `$NEO4J_HTTP_PORT_NUMBER`  |
-| `NEO4J_HTTPS_ADVERTISED_PORT_NUMBER`      | Advertised port for the https protocol.                                                                                                       | `$NEO4J_HTTPS_PORT_NUMBER` |
-| `NEO4J_HTTPS_ENABLED`                     | Enables the HTTPS connector.                                                                                                                  | `false`                    |
-| `NEO4J_BOLT_TLS_LEVEL`                    | The encryption level to be used to secure communications with Bolt connector. Allowed values: REQUIRED, OPTIONAL, DISABLED                    | `DISABLED`                 |
-| `NEO4J_HTTP_X_FORWARD_ENABLED`            | Enable processing of X-Forwarded-Host and X-Forwarded-Proto headers.                                                                          | `false`                    |
-| `NEO4J_HTTP_X_FORWARD_ALLOW_PROXIES`      | Enable processing of X-Forwarded-Host and X-Forwarded-Proto headers.                                                                          | `nil`                      |
-| `NEO4J_HTTP_X_FORWARD_ALLOW_HOSTS`        | List of allowed hostnames that can appear in X-Forwarded-Host header.                                                                         | `nil`                      |
+| Name                                        | Description                                                                                                                                                                                                           | Default Value              |
+|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
+| `NEO4J_HOST`                                | Hostname used to configure Neo4j advertised address. It can be either an IP or a domain. If left empty, it will be resolved to the machine IP                                                                         | `nil`                      |
+| `NEO4J_BIND_ADDRESS`                        | Neo4j bind address                                                                                                                                                                                                    | `0.0.0.0`                  |
+| `NEO4J_ALLOW_UPGRADE`                       | Allow automatic schema upgrades                                                                                                                                                                                       | `true`                     |
+| `NEO4J_PASSWORD`                            | Neo4j password.                                                                                                                                                                                                       | `bitnami1`                 |
+| `NEO4J_APOC_IMPORT_FILE_ENABLED`            | Allow importing files using the apoc library                                                                                                                                                                          | `true`                     |
+| `NEO4J_APOC_IMPORT_FILE_USE_NEO4J_CONFIG`   | Use neo4j configuration with the apoc library                                                                                                                                                                         | `true`                     |
+| `NEO4J_BOLT_PORT_NUMBER`                    | Port used for the bolt protocol.                                                                                                                                                                                      | `7687`                     |
+| `NEO4J_HTTP_PORT_NUMBER`                    | Port used for the http protocol.                                                                                                                                                                                      | `7474`                     |
+| `NEO4J_HTTPS_PORT_NUMBER`                   | Port used for the https protocol.                                                                                                                                                                                     | `7473`                     |
+| `NEO4J_BOLT_ADVERTISED_PORT_NUMBER`         | Advertised port for the bolt protocol.                                                                                                                                                                                | `$NEO4J_BOLT_PORT_NUMBER`  |
+| `NEO4J_HTTP_ADVERTISED_PORT_NUMBER`         | Advertised port for the http protocol.                                                                                                                                                                                | `$NEO4J_HTTP_PORT_NUMBER`  |
+| `NEO4J_HTTPS_ADVERTISED_PORT_NUMBER`        | Advertised port for the https protocol.                                                                                                                                                                               | `$NEO4J_HTTPS_PORT_NUMBER` |
+| `NEO4J_HTTPS_ENABLED`                       | Enables the HTTPS connector.                                                                                                                                                                                          | `false`                    |
+| `NEO4J_BOLT_TLS_LEVEL`                      | The encryption level to be used to secure communications with Bolt connector. Allowed values: REQUIRED, OPTIONAL, DISABLED                                                                                            | `DISABLED`                 |
+| `NEO4J_HTTP_X_FORWARD_ENABLED`              | Enable processing of X-Forwarded-Host and X-Forwarded-Proto headers.                                                                                                                                                  | `false`                    |
+| `NEO4J_HTTP_X_FORWARD_ALLOW_PROXIES`        | Enable processing of X-Forwarded-Host and X-Forwarded-Proto headers.                                                                                                                                                  | `nil`                      |
+| `NEO4J_HTTP_X_FORWARD_ALLOW_HOSTS`          | List of allowed hostnames that can appear in X-Forwarded-Host header.                                                                                                                                                 | `nil`                      |
+| `NEO4J_CLUSTERING_ENABLED`                  | Enable Neo4j Causal Clustering. Requires Neo4j Enterprise Edition.                                                                                                                                                    | `false`                    |
+| `NEO4J_CLUSTER_DISCOVERY_TYPE`              | Cluster discovery mechanism (dbms.cluster.discovery.resolver_type), e.g. K8S, LIST, DNS, SRV. No default: depends entirely on where this container runs, so it must be set explicitly whenever clustering is enabled. | `nil`                      |
+| `NEO4J_CLUSTER_DISCOVERY_ENDPOINTS`         | Comma-separated list of peer host:port discovery endpoints (dbms.cluster.endpoints), used with LIST/DNS-style discovery types, e.g. for a docker-compose deployment. Not used with NEO4J_CLUSTER_DISCOVERY_TYPE=K8S.  | `nil`                      |
+| `NEO4J_CLUSTER_MINIMUM_SIZE`                | Minimum number of core cluster members required to reach Raft quorum.                                                                                                                                                 | `3`                        |
+| `NEO4J_CLUSTER_DISCOVERY_LABEL_SELECTOR`    | Kubernetes label selector used to discover peer cluster pods via the Kubernetes API. Only used with NEO4J_CLUSTER_DISCOVERY_TYPE=K8S.                                                                                 | `nil`                      |
+| `NEO4J_CLUSTER_DISCOVERY_SERVICE_PORT_NAME` | Name of the Kubernetes Service port that maps to the cluster discovery port.                                                                                                                                          | `tcp-discovery`            |
+| `NEO4J_CLUSTER_DISCOVERY_PORT_NUMBER`       | Port used for cluster member discovery.                                                                                                                                                                               | `5000`                     |
+| `NEO4J_CLUSTER_TRANSACTION_PORT_NUMBER`     | Port used for cluster transaction-shipping.                                                                                                                                                                           | `6000`                     |
+| `NEO4J_CLUSTER_RAFT_PORT_NUMBER`            | Port used for cluster Raft consensus.                                                                                                                                                                                 | `7000`                     |
+| `NEO4J_CLUSTER_ROUTING_PORT_NUMBER`         | Port used for cluster server-side routing.                                                                                                                                                                            | `7688`                     |
+| `NEO4J_CLUSTER_ADVERTISED_ADDRESS`          | Address this cluster member advertises to its peers. If left empty, it will be resolved to the machine IP.                                                                                                            | `nil`                      |
+| `NEO4J_METRICS_PROMETHEUS_ENABLED`          | Enable the native Prometheus metrics endpoint.                                                                                                                                                                        | `false`                    |
+| `NEO4J_METRICS_PROMETHEUS_PORT_NUMBER`      | Port used for the Prometheus metrics endpoint.                                                                                                                                                                        | `2004`                     |
+| `NEO4J_BACKUP_ENABLED`                      | Enable the online backup service (neo4j-admin database backup). Requires Neo4j Enterprise Edition.                                                                                                                    | `false`                    |
+| `NEO4J_BACKUP_PORT_NUMBER`                  | Port used for the online backup service.                                                                                                                                                                              | `6362`                     |
+| `NEO4J_BACKUP_ADVERTISED_ADDRESS`           | Address this server advertises for the backup service. If left empty, it will be resolved to the machine IP.                                                                                                          | `nil`                      |
 
 #### Read-only environment variables
 
@@ -118,8 +136,6 @@ The following tables list the main variables you can set.
 | `NEO4J_DAEMON_GROUP`        | Neo4j system group.                              | `neo4j`                            |
 | `JAVA_HOME`                 | Java installation folder.                        | `${BITNAMI_ROOT_DIR}/java`         |
 
-When you start the neo4j image, you can adjust the configuration of the instance by passing one or more environment variables either on the docker-compose file or on the `docker run` command line.
-
 ### Using your Neo4j configuration files
 
 In order to load your own configuration files, you will have to make them available to the container. You can do it mounting a [volume](https://docs.docker.com/engine/tutorials/dockervolumes/) in `/bitnami/neo4j/conf`.
@@ -137,19 +153,7 @@ The Bitnami Neo4j Docker image from the [Bitnami Secure Images](https://go-vmwar
 
 ## Logging
 
-The Bitnami neo4j Docker image sends the container logs to the `stdout`. To view the logs:
-
-```console
-docker logs neo4j
-```
-
-or using Docker Compose:
-
-```console
-docker-compose logs neo4j
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami Neo4j Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Notable changes
 

@@ -7,11 +7,17 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 
 ## TL;DR
 
-Use this quick command to run the container.
-
 ```console
 docker run --name memcached bitnami/memcached:latest
 ```
+
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/memcached/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/memcached/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/memcached).
 
 ## Why use Bitnami Secure Images?
 
@@ -46,10 +52,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 
 The Bitnami Memcached Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
 
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/memcached).
-
 ## Connecting to other containers
 
 Using [Docker container networking](https://docs.docker.com/engine/userguide/networking/), a Memcached server running inside a container can easily be accessed by your application containers.
@@ -66,18 +68,23 @@ The following tables list the main variables you can set.
 
 #### Customizable environment variables
 
-| Name                        | Description                                                            | Default Value |
-|-----------------------------|------------------------------------------------------------------------|---------------|
-| `MEMCACHED_LISTEN_ADDRESS`  | Host that the Memcached service will bind to.                          | `nil`         |
-| `MEMCACHED_PORT_NUMBER`     | Port number used by Memcached.                                         | `11211`       |
-| `MEMCACHED_USERNAME`        | Memcached admin username.                                              | `root`        |
-| `MEMCACHED_PASSWORD`        | Password for the Memcached admin user.                                 | `nil`         |
-| `MEMCACHED_MAX_ITEM_SIZE`   | Memcached maximum item size.                                           | `nil`         |
-| `MEMCACHED_EXTRA_FLAGS`     | Extra flags to be used when running Memcached.                         | `nil`         |
-| `MEMCACHED_MAX_TIMEOUT`     | Maximum timeout in seconds for Memcached to start or stop.             | `5`           |
-| `MEMCACHED_CACHE_SIZE`      | Memcached cache size in MB.                                            | `nil`         |
-| `MEMCACHED_MAX_CONNECTIONS` | Maximum amount of concurrent connections that Memcached will tolerate. | `nil`         |
-| `MEMCACHED_THREADS`         | Amount of process threads that Memcached will use.                     | `nil`         |
+| Name                        | Description                                                                       | Default Value |
+|-----------------------------|-----------------------------------------------------------------------------------|---------------|
+| `MEMCACHED_LISTEN_ADDRESS`  | Host that the Memcached service will bind to.                                     | `nil`         |
+| `MEMCACHED_PORT_NUMBER`     | Port number used by Memcached.                                                    | `11211`       |
+| `MEMCACHED_USERNAME`        | Memcached admin username.                                                         | `root`        |
+| `MEMCACHED_PASSWORD`        | Password for the Memcached admin user.                                            | `nil`         |
+| `MEMCACHED_MAX_ITEM_SIZE`   | Memcached maximum item size.                                                      | `nil`         |
+| `MEMCACHED_EXTRA_FLAGS`     | Extra flags to be used when running Memcached.                                    | `nil`         |
+| `MEMCACHED_MAX_TIMEOUT`     | Maximum timeout in seconds for Memcached to start or stop.                        | `5`           |
+| `MEMCACHED_CACHE_SIZE`      | Memcached cache size in MB.                                                       | `nil`         |
+| `MEMCACHED_MAX_CONNECTIONS` | Maximum amount of concurrent connections that Memcached will tolerate.            | `nil`         |
+| `MEMCACHED_THREADS`         | Amount of process threads that Memcached will use.                                | `nil`         |
+| `MEMCACHED_TLS_ENABLED`     | Whether to enable TLS/SSL encryption. Valid values: yes, no.                      | `no`          |
+| `MEMCACHED_TLS_CERT_FILE`   | Path to the TLS certificate chain file in PEM format.                             | `nil`         |
+| `MEMCACHED_TLS_KEY_FILE`    | Path to the TLS private key file in PEM format.                                   | `nil`         |
+| `MEMCACHED_TLS_CA_FILE`     | Path to the CA certificate file used for client certificate verification.         | `nil`         |
+| `MEMCACHED_TLS_VERIFY_MODE` | Peer certificate verification mode: 0 (None), 1 (Request), 2 (Require), 3 (Once). | `0`           |
 
 #### Read-only environment variables
 
@@ -125,16 +132,6 @@ Passing extra command-line flags to the Memcached service command is possible by
 docker run --name memcached bitnami/memcached:latest /opt/bitnami/scripts/memcached/run.sh -vvv
 ```
 
-Alternatively, modify the [`docker-compose.yml`](https://github.com/bitnami/containers/blob/main/bitnami/memcached/docker-compose.yml) file present in this repository:
-
-```yaml
-services:
-  memcached:
-  ...
-    command: /opt/bitnami/scripts/memcached/run.sh -vvv
-  ...
-```
-
 Refer to the [Memcached man page](https://www.unix.com/man-page/linux/1/memcached/) for the complete list of arguments.
 
 ### Using custom SASL configuration
@@ -161,19 +158,7 @@ The Bitnami Memcached Docker image from the [Bitnami Secure Images](https://go-v
 
 ## Logging
 
-The Bitnami Memcached Docker image sends the container logs to the `stdout`. To view the logs:
-
-```console
-docker logs memcached
-```
-
-or using Docker Compose:
-
-```console
-docker-compose logs memcached
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami Memcached Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Notable changes
 

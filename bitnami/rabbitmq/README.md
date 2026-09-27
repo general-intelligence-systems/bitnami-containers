@@ -13,6 +13,14 @@ docker run --name rabbitmq bitnami/rabbitmq:latest
 
 You can find the default credentials and available configuration options in the [Environment Variables](#environment-variables) section.
 
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/rabbitmq/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq).
+
 ## Why use Bitnami Secure Images?
 
 Those are hardened, minimal CVE images built and maintained by Bitnami. Bitnami Secure Images are based on the cloud-optimized, security-hardened enterprise [OS Photon Linux](https://vmware.github.io/photon/). Why choose BSI images?
@@ -45,10 +53,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 ## Get this image
 
 The Bitnami RabbitMQ Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
-
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq).
 
 ## Persisting your application
 
@@ -99,6 +103,8 @@ The following tables list the main variables you can set.
 | `RABBITMQ_VHOSTS`                              | List of additional virtual host (vhost). Default queue type can be set using colon separator (RABBITMQ_VHOSTS=queue_name_0 queue_name_1:quorum)                                                  | `nil`                                |
 | `RABBITMQ_CLUSTER_REBALANCE`                   | Rebalance the RabbitMQ Cluster.                                                                                                                                                                  | `false`                              |
 | `RABBITMQ_CLUSTER_REBALANCE_ATTEMPTS`          | Max attempts for the rebalance check to run                                                                                                                                                      | `100`                                |
+| `RABBITMQ_COMMUNITY_PLUGINS`                   | Comma, semi-colon or space separated list of plugins to install during bootstrap.                                                                                                                | `nil`                                |
+| `RABBITMQ_COMMUNITY_PLUGINS_SECURE`            | Force secure installation for community plugins.                                                                                                                                                 | `yes`                                |
 | `RABBITMQ_USERNAME`                            | RabbitMQ user name.                                                                                                                                                                              | `user`                               |
 | `RABBITMQ_PASSWORD`                            | RabbitMQ user password.                                                                                                                                                                          | `bitnami`                            |
 | `RABBITMQ_FORCE_BOOT`                          | Force a node to start even if it was not the last to shut down                                                                                                                                   | `no`                                 |
@@ -146,8 +152,6 @@ The following tables list the main variables you can set.
 | `RABBITMQ_MNESIA_BASE`        | Path to RabbitMQ mnesia directory.                     | `$RABBITMQ_DATA_DIR`                                              |
 | `RABBITMQ_COMBINED_CERT_PATH` | Path to the RabbitMQ server SSL certificate key file.  | `${RABBITMQ_COMBINED_CERT_PATH:-/tmp/rabbitmq_combined_keys.pem}` |
 
-When you start the rabbitmq image, you can adjust the configuration of the instance by passing one or more environment variables either on the docker-compose file or on the `docker run` command line.
-
 ### Configuration file
 
 A custom `rabbitmq.conf` configuration file can be mounted to the `/bitnami/rabbitmq/conf` directory. If no file is mounted, the container will generate a default one based on the environment variables. You can also mount on this directory your own `advanced.config` (using classic Erlang terms) and `rabbitmq-env.conf` configuration files.
@@ -185,19 +189,7 @@ Follow these instructions to use the [Bitnami Docker OpenLDAP](https://github.co
 
 ## Logging
 
-The Bitnami RabbitMQ Docker image sends the container logs to the `stdout`. To view the logs:
-
-```console
-docker logs rabbitmq
-```
-
-or using Docker Compose:
-
-```console
-docker-compose logs rabbitmq
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami RabbitMQ Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Notable changes
 

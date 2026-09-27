@@ -11,6 +11,14 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 docker run --name kong bitnami/kong:latest
 ```
 
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/kong/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/kong/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kong).
+
 ## Why use Bitnami Secure Images?
 
 Those are hardened, minimal CVE images built and maintained by Bitnami. Bitnami Secure Images are based on the cloud-optimized, security-hardened enterprise [OS Photon Linux](https://vmware.github.io/photon/). Why choose BSI images?
@@ -39,10 +47,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 ## Get this image
 
 The Bitnami Kong Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
-
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kong).
 
 ## Connecting to other containers
 
@@ -82,6 +86,7 @@ The following tables list the main variables you can set.
 
 | Name                           | Description                                        | Default Value                                                                                                                   |
 |--------------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `KONG_PREFIX`                  | Kong installation directory.                       | `${KONG_SERVER_DIR}`                                                                                                            |
 | `KONG_MIGRATE`                 | Perform Kong database migration.                   | `no`                                                                                                                            |
 | `KONG_EXIT_AFTER_MIGRATE`      | Exit Kong after performing the database migration. | `no`                                                                                                                            |
 | `KONG_PROXY_LISTEN_ADDRESS`    | Listen address for Kong proxy daemon.              | `0.0.0.0`                                                                                                                       |
@@ -109,7 +114,6 @@ The following tables list the main variables you can set.
 | `KONG_DEFAULT_CONF_FILE`  | Kong default configuration file.                      | `${KONG_CONF_DIR}/kong.conf.default` |
 | `KONG_INITSCRIPTS_DIR`    | Kong directory for init scripts.                      | `/docker-entrypoint-initdb.d`        |
 | `KONG_SERVER_DIR`         | Directory where Kong Openresty instance is created.   | `${KONG_BASE_DIR}/server`            |
-| `KONG_PREFIX`             | Kong installation directory.                          | `${KONG_SERVER_DIR}`                 |
 | `KONG_DEFAULT_SERVER_DIR` | Directory with default Kong Openresty instance files. | `${KONG_BASE_DIR}/server.default`    |
 | `KONG_LOGS_DIR`           | Directory where Kong logs are stored.                 | `${KONG_SERVER_DIR}/logs`            |
 | `KONG_DAEMON_USER`        | Kong system user.                                     | `kong`                               |
@@ -159,13 +163,7 @@ The Bitnami Kong Docker image from the [Bitnami Secure Images](https://go-vmware
 
 ## Logging
 
-The Bitnami Kong Docker image sends the container logs to `stdout`. To view the logs:
-
-```console
-docker logs kong
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami Kong Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Customize this image
 

@@ -63,7 +63,7 @@ jobs:
     if: |
       needs.get-containers.outputs.result == 'ok'
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         name: Checkout Repository
         with:
           ref: ${{ github.event.pull_request.head.ref }}
@@ -81,7 +81,7 @@ jobs:
             echo "result=skip" >> $GITHUB_OUTPUT
           fi
       - name: Check license Headers
-        uses: apache/skywalking-eyes/header@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1
+        uses: apache/skywalking-eyes/header@a196742f472feaffafea537ce5a2a4c3c53a8de4
         if: ${{ steps.get-modified-files.outputs.result == 'success' }}
   auto-pr-review:
     runs-on: ubuntu-latest
@@ -98,7 +98,7 @@ jobs:
       # Approve the CI's PR automatically, as it has been tested in our internal pipeline already
       # Approved by the 'github-actions' user; a PR can't be approved by its author
       - name: PR Approval
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           result-encoding: string
           retries: 3
@@ -111,7 +111,7 @@ jobs:
             });
       - name: Merge
         id: merge
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           result-encoding: string
           retries: 3
@@ -128,7 +128,7 @@ jobs:
       # post a comment on the PR and assign a maintainer agent to review it
       - name: Manual review required
         if: ${{ always() && steps.merge.outcome != 'success' }}
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         env:
           BODY: |
             There has been an error during the automated release process. Manual revision is now required.

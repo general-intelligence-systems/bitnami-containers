@@ -11,7 +11,13 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 docker run --name mariadb -e ALLOW_EMPTY_PASSWORD=yes bitnami/mariadb:latest
 ```
 
-**Warning**: These quick setups are only intended for development environments. You are encouraged to change the insecure default credentials and check out the available configuration options in the [Configuration](#configuration) section for a more secure deployment.
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/mariadb/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/mariadb/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/mariadb).
 
 ## Why use Bitnami Secure Images?
 
@@ -78,10 +84,6 @@ Learn more about the Bitnami tagging policy and the difference between rolling t
 
 The Bitnami MariaDB Docker image is only available to [Bitnami Secure Images](https://bitnami.com) customers.
 
-## Using `docker-compose.yaml`
-
-Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/mariadb).
-
 ## Persisting your database
 
 If you remove the container all your data will be lost, and the next time you run the image the database will be reinitialized. To avoid this loss of data, you should mount a volume that will persist even after the container is removed.
@@ -106,42 +108,43 @@ The following tables list the main variables you can set.
 
 #### Customizable environment variables
 
-| Name                              | Description                                                                                                               | Default Value |
-|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------|---------------|
-| `ALLOW_EMPTY_PASSWORD`            | Allow MariaDB access without any password.                                                                                | `no`          |
-| `MARIADB_AUTHENTICATION_PLUGIN`   | MariaDB authentication plugin to configure during the first initialization.                                               | `nil`         |
-| `MARIADB_ROOT_USER`               | MariaDB database root user.                                                                                               | `root`        |
-| `MARIADB_ROOT_PASSWORD`           | MariaDB database root user password.                                                                                      | `nil`         |
-| `MARIADB_USER`                    | MariaDB database user to create during the first initialization.                                                          | `nil`         |
-| `MARIADB_PASSWORD`                | Password for the MariaDB database user to create during the first initialization.                                         | `nil`         |
-| `MARIADB_DATABASE`                | MariaDB database to create during the first initialization.                                                               | `nil`         |
-| `MARIADB_MASTER_HOST`             | Address for the MariaDB master node.                                                                                      | `nil`         |
-| `MARIADB_MASTER_PORT_NUMBER`      | Port number for the MariaDB master node.                                                                                  | `3306`        |
-| `MARIADB_MASTER_ROOT_USER`        | MariaDB database root user of the master host.                                                                            | `root`        |
-| `MARIADB_MASTER_ROOT_PASSWORD`    | Password for the MariaDB database root user of the the master host.                                                       | `nil`         |
-| `MARIADB_MASTER_DELAY`            | MariaDB database replication delay.                                                                                       | `0`           |
-| `MARIADB_REPLICATION_USER`        | MariaDB replication database user.                                                                                        | `nil`         |
-| `MARIADB_REPLICATION_PASSWORD`    | Password for the MariaDB replication database user.                                                                       | `nil`         |
-| `MARIADB_PORT_NUMBER`             | Port number to use for the MariaDB Server service.                                                                        | `nil`         |
-| `MARIADB_REPLICATION_MODE`        | MariaDB replication mode.                                                                                                 | `nil`         |
-| `MARIADB_REPLICATION_SLAVE_DUMP`  | Make a dump on master and update slave MariaDB database                                                                   | `false`       |
-| `MARIADB_EXTRA_FLAGS`             | Extra flags to be passed to start the MariaDB Server.                                                                     | `nil`         |
-| `MARIADB_INIT_SLEEP_TIME`         | Sleep time when waiting for MariaDB init configuration operations to finish.                                              | `nil`         |
-| `MARIADB_CHARACTER_SET`           | MariaDB collation to use.                                                                                                 | `nil`         |
-| `MARIADB_COLLATE`                 | MariaDB collation to use.                                                                                                 | `nil`         |
-| `MARIADB_BIND_ADDRESS`            | MariaDB bind address.                                                                                                     | `nil`         |
-| `MARIADB_SQL_MODE`                | MariaDB Server SQL modes to enable.                                                                                       | `nil`         |
-| `MARIADB_UPGRADE`                 | MariaDB upgrade option.                                                                                                   | `AUTO`        |
-| `MARIADB_SKIP_TEST_DB`            | Whether to skip creating the test database.                                                                               | `no`          |
-| `MARIADB_CLIENT_ENABLE_SSL`       | Whether to force SSL for connections to the MariaDB database.                                                             | `no`          |
-| `MARIADB_CLIENT_SSL_CA_FILE`      | Path to CA certificate to use for SSL connections to the MariaDB database server.                                         | `nil`         |
-| `MARIADB_CLIENT_SSL_CERT_FILE`    | Path to client public key certificate to use for SSL connections to the MariaDB database server.                          | `nil`         |
-| `MARIADB_CLIENT_SSL_KEY_FILE`     | Path to client private key to use for SSL connections to the MariaDB database server.                                     | `nil`         |
-| `MARIADB_CLIENT_EXTRA_FLAGS`      | Whether to force SSL connections with the "mysql" CLI tool. Useful for applications that rely on the CLI instead of APIs. | `no`          |
-| `MARIADB_STARTUP_WAIT_RETRIES`    | Number of retries waiting for the database to be running.                                                                 | `300`         |
-| `MARIADB_STARTUP_WAIT_SLEEP_TIME` | Sleep time between retries waiting for the database to be running.                                                        | `2`           |
-| `MARIADB_ENABLE_SLOW_QUERY`       | Whether to enable slow query logs.                                                                                        | `0`           |
-| `MARIADB_LONG_QUERY_TIME`         | How much time, in seconds, defines a slow query.                                                                          | `10.0`        |
+| Name                              | Description                                                                                                               | Default Value           |
+|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| `ALLOW_EMPTY_PASSWORD`            | Allow MariaDB access without any password.                                                                                | `no`                    |
+| `MARIADB_AUTHENTICATION_PLUGIN`   | MariaDB authentication plugin to configure during the first initialization.                                               | `nil`                   |
+| `MARIADB_ROOT_USER`               | MariaDB database root user.                                                                                               | `root`                  |
+| `MARIADB_ROOT_PASSWORD`           | MariaDB database root user password.                                                                                      | `nil`                   |
+| `MARIADB_USER`                    | MariaDB database user to create during the first initialization.                                                          | `nil`                   |
+| `MARIADB_PASSWORD`                | Password for the MariaDB database user to create during the first initialization.                                         | `nil`                   |
+| `MARIADB_DATABASE`                | MariaDB database to create during the first initialization.                                                               | `nil`                   |
+| `MARIADB_MASTER_HOST`             | Address for the MariaDB master node.                                                                                      | `nil`                   |
+| `MARIADB_MASTER_PORT_NUMBER`      | Port number for the MariaDB master node.                                                                                  | `3306`                  |
+| `MARIADB_MASTER_ROOT_USER`        | MariaDB database root user of the master host.                                                                            | `root`                  |
+| `MARIADB_MASTER_ROOT_PASSWORD`    | Password for the MariaDB database root user of the the master host.                                                       | `nil`                   |
+| `MARIADB_MASTER_DELAY`            | MariaDB database replication delay.                                                                                       | `0`                     |
+| `MARIADB_REPLICATION_USER`        | MariaDB replication database user.                                                                                        | `nil`                   |
+| `MARIADB_REPLICATION_PASSWORD`    | Password for the MariaDB replication database user.                                                                       | `nil`                   |
+| `MARIADB_PORT_NUMBER`             | Port number to use for the MariaDB Server service.                                                                        | `nil`                   |
+| `MARIADB_REPLICATION_MODE`        | MariaDB replication mode.                                                                                                 | `nil`                   |
+| `MARIADB_REPLICATION_SLAVE_DUMP`  | Make a dump on master and update slave MariaDB database                                                                   | `false`                 |
+| `MARIADB_EXTRA_FLAGS`             | Extra flags to be passed to start the MariaDB Server.                                                                     | `nil`                   |
+| `MARIADB_INIT_SLEEP_TIME`         | Sleep time when waiting for MariaDB init configuration operations to finish.                                              | `nil`                   |
+| `MARIADB_CHARACTER_SET`           | MariaDB collation to use.                                                                                                 | `nil`                   |
+| `MARIADB_COLLATE`                 | MariaDB collation to use.                                                                                                 | `nil`                   |
+| `MARIADB_BIND_ADDRESS`            | MariaDB bind address.                                                                                                     | `nil`                   |
+| `MARIADB_SQL_MODE`                | MariaDB Server SQL modes to enable.                                                                                       | `nil`                   |
+| `MARIADB_UPGRADE`                 | MariaDB upgrade option.                                                                                                   | `AUTO`                  |
+| `MARIADB_SKIP_TEST_DB`            | Whether to skip creating the test database.                                                                               | `no`                    |
+| `MARIADB_CLIENT_ENABLE_SSL`       | Whether to force SSL for connections to the MariaDB database.                                                             | `no`                    |
+| `MARIADB_REPLICATION_USE_SSL`     | Whether to force SSL for MariaDB replication.                                                                             | `$DB_CLIENT_ENABLE_SSL` |
+| `MARIADB_CLIENT_SSL_CA_FILE`      | Path to CA certificate to use for SSL connections to the MariaDB database server.                                         | `nil`                   |
+| `MARIADB_CLIENT_SSL_CERT_FILE`    | Path to client public key certificate to use for SSL connections to the MariaDB database server.                          | `nil`                   |
+| `MARIADB_CLIENT_SSL_KEY_FILE`     | Path to client private key to use for SSL connections to the MariaDB database server.                                     | `nil`                   |
+| `MARIADB_CLIENT_EXTRA_FLAGS`      | Whether to force SSL connections with the "mysql" CLI tool. Useful for applications that rely on the CLI instead of APIs. | `no`                    |
+| `MARIADB_STARTUP_WAIT_RETRIES`    | Number of retries waiting for the database to be running.                                                                 | `300`                   |
+| `MARIADB_STARTUP_WAIT_SLEEP_TIME` | Sleep time between retries waiting for the database to be running.                                                        | `2`                     |
+| `MARIADB_ENABLE_SLOW_QUERY`       | Whether to enable slow query logs.                                                                                        | `0`                     |
+| `MARIADB_LONG_QUERY_TIME`         | How much time, in seconds, defines a slow query.                                                                          | `10.0`                  |
 
 #### Read-only environment variables
 
@@ -304,21 +307,7 @@ FROM bitnami/mariadb
 
 ## Logging
 
-The Bitnami MariaDB Docker image sends the container logs to the `stdout`. To view the logs:
-
-```console
-docker logs mariadb
-```
-
-or using Docker Compose:
-
-```console
-docker-compose logs mariadb
-```
-
-To increase the verbosity on initialization or add extra debug information, you can assign the `BITNAMI_DEBUG` environment variable to `true`.
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+The Bitnami MariaDB Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Useful Links
 

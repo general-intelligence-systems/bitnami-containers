@@ -11,6 +11,14 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 docker run --name sonarqube bitnami/sonarqube:latest
 ```
 
+## Using `docker-compose.yml`
+
+The docker-compose.yaml file of this container can be found in the [Bitnami Containers repository](https://github.com/bitnami/containers/).
+
+[https://github.com/bitnami/containers/tree/main/bitnami/sonarqube/docker-compose.yml](https://github.com/bitnami/containers/tree/main/bitnami/sonarqube/docker-compose.yml)
+
+Please be aware this file has not undergone internal testing. Consequently, we advise its use exclusively for development or testing purposes. For production-ready deployments, we highly recommend utilizing its associated [Bitnami Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/sonarqube).
+
 ## Why use Bitnami Secure Images?
 
 Those are hardened, minimal CVE images built and maintained by Bitnami. Bitnami Secure Images are based on the cloud-optimized, security-hardened enterprise [OS Photon Linux](https://vmware.github.io/photon/). Why choose BSI images?
@@ -83,8 +91,10 @@ The following tables list the main variables you can set.
 | `SONARQUBE_MIN_HEAP_SIZE`               | Minimum heap size for SonarQube services (CE, Search and Web).                                                                                         | `nil`                                               |
 | `SONARQUBE_ELASTICSEARCH_JAVA_ADD_OPTS` | Additional Java options for Elasticsearch.                                                                                                             | `nil`                                               |
 | `SONARQUBE_EXTRA_PROPERTIES`            | Comma separated list of properties to be set in the sonar.properties file, e.g. `my.sonar.property1=property_value,my.sonar.property2=property_value`. | `nil`                                               |
+| `SONARQUBE_ENABLE_DEFAULT_PLUGINS`      | Whether to enable the default bundled plugins.                                                                                                         | `no`                                                |
+| `SONARQUBE_ACCEPT_RISK_CONSENT`         | Whether to accept the third-party plugins risk consent.                                                                                                | `no`                                                |
 | `SONARQUBE_USERNAME`                    | SonarQube user name.                                                                                                                                   | `admin`                                             |
-| `SONARQUBE_PASSWORD`                    | SonarQube user password.                                                                                                                               | `bitnami`                                           |
+| `SONARQUBE_PASSWORD`                    | SonarQube user password.                                                                                                                               | `nil`                                               |
 | `SONARQUBE_EMAIL`                       | SonarQube user e-mail address.                                                                                                                         | `user@example.com`                                  |
 | `SONARQUBE_SMTP_HOST`                   | SonarQube SMTP server host.                                                                                                                            | `nil`                                               |
 | `SONARQUBE_SMTP_PORT_NUMBER`            | SonarQube SMTP server port number.                                                                                                                     | `nil`                                               |
@@ -109,6 +119,7 @@ The following tables list the main variables you can set.
 | `SONARQUBE_LOGS_DIR`              | Directory for SonarQube log files.                   | `${SONARQUBE_BASE_DIR}/logs`                              |
 | `SONARQUBE_LOG_FILE`              | SonarQube log file.                                  | `${SONARQUBE_LOGS_DIR}/sonar.log`                         |
 | `SONARQUBE_TMP_DIR`               | Directory for SonarQube temporary files.             | `${SONARQUBE_BASE_DIR}/temp`                              |
+| `SONARQUBE_PLUGINS_DIR`           | Directory for SonarQube plugins.                     | `${SONARQUBE_BASE_DIR}/extensions/plugins`                |
 | `SONARQUBE_PID_FILE`              | SonarQube PID file.                                  | `${SONARQUBE_BASE_DIR}/pids/SonarQube.pid`                |
 | `SONARQUBE_BIN_DIR`               | SonarQube directory for binary executables.          | `${SONARQUBE_BASE_DIR}/bin/linux-x86-64`                  |
 | `SONARQUBE_VOLUME_DIR`            | SonarQube directory for mounted configuration files. | `${BITNAMI_VOLUME_DIR}/sonarqube`                         |
@@ -119,8 +130,6 @@ The following tables list the main variables you can set.
 | `SONARQUBE_CE_JAVA_ADD_OPTS`      | Additional Java options for Compute Engine.          | `${SONARQUBE_CE_JAVA_ADD_OPTS:-} ${JAVA_TOOL_OPTIONS:-}`  |
 | `SONARQUBE_WEB_JAVA_ADD_OPTS`     | Additional Java options for Web.                     | `${SONARQUBE_WEB_JAVA_ADD_OPTS:-} ${JAVA_TOOL_OPTIONS:-}` |
 | `SONARQUBE_DEFAULT_DATABASE_HOST` | Default database server host.                        | `postgresql`                                              |
-
-When you start the SonarQube&trade; image, you can adjust the configuration of the instance by passing one or more environment variables either on the docker-compose file or on the `docker run` command line.
 
 ### Examples
 
@@ -141,70 +150,7 @@ The Bitnami SonarQube&trade; Docker image from the [Bitnami Secure Images](https
 
 ## Logging
 
-The Bitnami SonarQube&trade; Docker image sends the container logs to `stdout`. To view the logs:
-
-```console
-docker logs sonarqube
-```
-
-Or using Docker Compose:
-
-```console
-docker-compose logs sonarqube
-```
-
-You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
-
-## Maintenance
-
-### Backing up your container
-
-To backup your data, configuration and logs, follow these simple steps:
-
-#### Step 1: Stop the currently running container
-
-```console
-docker stop sonarqube
-```
-
-Or using Docker Compose:
-
-```console
-docker-compose stop sonarqube
-```
-
-#### Step 2: Run the backup command
-
-We need to mount two volumes in a container we will use to create the backup: a directory on your host to store the backup in, and the volumes from the container we just stopped so we can access the data.
-
-```console
-docker run --rm -v /path/to/sonarqube-backups:/backups --volumes-from sonarqube busybox \
-  cp -a /bitnami/sonarqube /backups/latest
-```
-
-### Restoring a backup
-
-Restoring a backup is as simple as mounting the backup as volumes in the containers.
-
-For the PostgreSQL database container:
-
-```diff
- $ docker run -d --name postgresql \
-   ...
--  --volume /path/to/postgresql-persistence:/bitnami/postgresql \
-+  --volume /path/to/postgresql-backups/latest:/bitnami/postgresql \
-   bitnami/postgresql:latest
-```
-
-For the SonarQube&trade; container:
-
-```diff
- $ docker run -d --name sonarqube \
-   ...
--  --volume /path/to/sonarqube-persistence:/bitnami/sonarqube \
-+  --volume /path/to/sonarqube-backups/latest:/bitnami/sonarqube \
-   bitnami/sonarqube:latest
-```
+The Bitnami SonarQube&trade; Docker image sends the container logs to the `stdout`. You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
 
 ## Notable Changes
 
@@ -213,7 +159,7 @@ For the SonarQube&trade; container:
 - The size of the container image has been decreased.
 - The configuration logic is now based on Bash scripts in the *rootfs/* folder.
 - The SonarQube&trade; container image has been migrated to a "non-root" user approach. Previously the container ran as the `root` user and the SonarQube&trade; daemon was started as the `sonarqube` user. From now on, both the container and the SonarQube&trade; daemon run as user `1001`. You can revert this behavior by changing `USER 1001` to `USER root` in the Dockerfile, or `user: root` in `docker-compose.yml`. Consequences:
-  - Backwards compatibility is not guaranteed when data is persisted using docker or docker-compose. We highly recommend migrating the SonarQube&trade; site by exporting its content, and importing it on a new SonarQube&trade; container. Follow the steps in [Backing up your container](#backing-up-your-container) and [Restoring a backup](#restoring-a-backup) to migrate the data between the old and new container.
+  - Backwards compatibility is not guaranteed when data is persisted using docker or docker-compose. We highly recommend migrating the SonarQube&trade; site by exporting its content, and importing it on a new SonarQube&trade; container. Before recreating the container, back up or copy the persisted application and database data so you can attach it to the new deployment.
 
 ## License
 
