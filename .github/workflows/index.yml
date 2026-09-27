@@ -12,27 +12,22 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 so origin/main exists -- a shallow checkout only has
+      # this branch, and dockerfile-commits reads main.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Fetch packages from GHCR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
+      # Built from the repo, not from /orgs/{org}/packages: that endpoint
+      # rejects GITHUB_TOKEN (HTTP 400), which is why the README claimed
+      # "No packages published yet" for six months. bin/dockerfile-commits
+      # lists exactly what build.yml pushes, so it is the same source of truth.
+      - name: List images from main
         run: |
-          echo "Fetching packages for $OWNER..."
-          if ! gh api --paginate "/orgs/$OWNER/packages?package_type=container&per_page=100" --jq '.[].name' > /tmp/names.txt; then
-            echo "API error or no packages found"
-            touch packages.dat
-            exit 0
-          fi
-          echo "Found $(wc -l < /tmp/names.txt) packages"
-          sort /tmp/names.txt | while read name; do
-            echo "  $name"
-            tags=$(gh api --paginate "/orgs/$OWNER/packages/container/$(echo "$name" | sed 's|/|%2F|g')/versions" --jq '.[].metadata.container.tags[]' 2>/dev/null | head -10 | tr '\n' ',' | sed 's/,$//')
-            [ -n "$tags" ] && echo "$name|$tags"
-          done > packages.dat
+          ./bin/dockerfile-commits origin/main \
+            | awk '{print $2"|"$3",latest"}' \
+            | sort > packages.dat
           echo "Wrote $(wc -l < packages.dat) packages to packages.dat"
-          cat packages.dat
 
       - name: Render README.md
         env:
