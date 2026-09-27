@@ -18,11 +18,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          result=$(gh api \
-            -X POST \
-            /repos/${{ github.repository }}/merge-upstream \
-            -f branch=main 2>&1) || true
-          echo "$result"
+          # No `|| true` here: a swallowed failure is how main silently froze at
+          # 2026-04-17 while every nightly run still reported green.
+          gh api -X POST /repos/${{ github.repository }}/merge-upstream -f branch=main
 
   build:
     needs: sync

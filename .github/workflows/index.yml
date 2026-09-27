@@ -20,7 +20,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           echo "Fetching packages for $OWNER..."
-          if ! gh api --paginate "/orgs/$OWNER/packages" --jq '.[].name' > /tmp/names.txt; then
+          if ! gh api --paginate "/orgs/$OWNER/packages?package_type=container&per_page=100" --jq '.[].name' > /tmp/names.txt; then
             echo "API error or no packages found"
             touch packages.dat
             exit 0
