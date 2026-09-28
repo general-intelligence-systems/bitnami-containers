@@ -139,7 +139,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | kserve-localmodel-controller | `0.21.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/kserve-localmodel-controller:0.21.0-debian-12-r0` |
 | kserve-localmodelnode-agent | `0.21.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/kserve-localmodelnode-agent:0.21.0-debian-12-r0` |
 | kserve-router | `0.21.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/kserve-router:0.21.0-debian-12-r0` |
-| kserve-storage-initializer | `0.20.0-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/kserve-storage-initializer:0.20.0-debian-12-r3` |
+| kserve-storage-initializer | `0.21.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/kserve-storage-initializer:0.21.0-debian-12-r0` |
 | ksql | `8.3.1-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/ksql:8.3.1-debian-12-r2` |
 | kube-arangodb | `1.4.5-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/kube-arangodb:1.4.5-debian-12-r2` |
 | kube-rbac-proxy | `0.22.1-debian-12-r5, latest` | `docker pull ghcr.io/general-intelligence-systems/kube-rbac-proxy:0.22.1-debian-12-r5` |
@@ -214,7 +214,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | ray | `2.58.0-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/ray:2.58.0-debian-12-r2` |
 | rclone | `1.75.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/rclone:1.75.1-debian-12-r1` |
 | redis-cluster | `8.10.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/redis-cluster:8.10.2-debian-12-r1` |
-| redis-exporter | `1.92.0-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/redis-exporter:1.92.0-debian-12-r1` |
+| redis-exporter | `1.92.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/redis-exporter:1.92.1-debian-12-r0` |
 | redis-sentinel | `8.10.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/redis-sentinel:8.10.2-debian-12-r1` |
 | redis | `8.10.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/redis:8.10.2-debian-12-r1` |
 | redmine | `7.0.1-debian-12-r7, latest` | `docker pull ghcr.io/general-intelligence-systems/redmine:7.0.1-debian-12-r7` |
@@ -261,4 +261,4 @@ Published to `ghcr.io/general-intelligence-systems`.
 | zipkin | `3.6.1-debian-12-r10, latest` | `docker pull ghcr.io/general-intelligence-systems/zipkin:3.6.1-debian-12-r10` |
 | zookeeper | `3.9.6-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/zookeeper:3.9.6-debian-12-r1` |
 
-_Last updated: 2026-09-27 18:14:53 UTC_
+_Last updated: 2026-09-28 04:06:47 UTC_
