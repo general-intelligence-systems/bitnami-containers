@@ -11,7 +11,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | airflow | `3.3.2-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/airflow:3.3.2-debian-12-r2` |
 | alertmanager | `0.34.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/alertmanager:0.34.1-debian-12-r1` |
 | apache-exporter | `1.1.1-debian-12-r9, latest` | `docker pull ghcr.io/general-intelligence-systems/apache-exporter:1.1.1-debian-12-r9` |
-| apache | `2.4.68-debian-12-r10, latest` | `docker pull ghcr.io/general-intelligence-systems/apache:2.4.68-debian-12-r10` |
+| apache | `2.4.68-debian-12-r12, latest` | `docker pull ghcr.io/general-intelligence-systems/apache:2.4.68-debian-12-r12` |
 | apisix-ingress-controller | `2.2.0-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/apisix-ingress-controller:2.2.0-debian-12-r3` |
 | apisix | `3.18.0-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/apisix:3.18.0-debian-12-r2` |
 | appsmith | `2.4.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/appsmith:2.4.2-debian-12-r1` |
@@ -30,18 +30,18 @@ Published to `ghcr.io/general-intelligence-systems`.
 | cassandra | `5.0.9-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/cassandra:5.0.9-debian-12-r3` |
 | cert-manager-webhook | `1.21.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/cert-manager-webhook:1.21.2-debian-12-r1` |
 | cert-manager | `1.21.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/cert-manager:1.21.2-debian-12-r1` |
-| chainloop-artifact-cas | `1.111.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-artifact-cas:1.111.1-debian-12-r0` |
-| chainloop-control-plane-migrations | `1.111.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-control-plane-migrations:1.111.1-debian-12-r0` |
-| chainloop-control-plane | `1.111.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-control-plane:1.111.1-debian-12-r0` |
+| chainloop-artifact-cas | `1.111.3-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-artifact-cas:1.111.3-debian-12-r0` |
+| chainloop-control-plane-migrations | `1.111.3-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-control-plane-migrations:1.111.3-debian-12-r0` |
+| chainloop-control-plane | `1.111.3-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/chainloop-control-plane:1.111.3-debian-12-r0` |
 | charts-syncer | `2.5.0-debian-12-r5, latest` | `docker pull ghcr.io/general-intelligence-systems/charts-syncer:2.5.0-debian-12-r5` |
 | cilium-operator | `1.20.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/cilium-operator:1.20.2-debian-12-r1` |
 | cilium-proxy | `1.37.5-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/cilium-proxy:1.37.5-debian-12-r3` |
 | cilium | `1.20.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/cilium:1.20.2-debian-12-r1` |
 | clickhouse-backup | `2.8.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-backup:2.8.1-debian-12-r0` |
-| clickhouse-keeper | `26.8.14-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-keeper:26.8.14-debian-12-r0` |
+| clickhouse-keeper | `26.8.15-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-keeper:26.8.15-debian-12-r0` |
 | clickhouse-operator-metrics-exporter | `0.27.4-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-operator-metrics-exporter:0.27.4-debian-12-r0` |
 | clickhouse-operator | `0.27.4-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-operator:0.27.4-debian-12-r0` |
-| clickhouse | `26.8.14-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse:26.8.14-debian-12-r0` |
+| clickhouse | `26.8.15-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse:26.8.15-debian-12-r0` |
 | cloudnative-pg | `1.30.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/cloudnative-pg:1.30.1-debian-12-r0` |
 | cluster-autoscaler | `1.36.1-debian-12-r6, latest` | `docker pull ghcr.io/general-intelligence-systems/cluster-autoscaler:1.36.1-debian-12-r6` |
 | concourse | `8.3.0-debian-12-r12, latest` | `docker pull ghcr.io/general-intelligence-systems/concourse:8.3.0-debian-12-r12` |
@@ -85,7 +85,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | gitlab-runner | `19.4.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/gitlab-runner:19.4.1-debian-12-r1` |
 | git | `2.56.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/git:2.56.0-debian-12-r0` |
 | golang | `1.27.1-debian-12-r4, latest` | `docker pull ghcr.io/general-intelligence-systems/golang:1.27.1-debian-12-r4` |
-| google-cloud-sdk | `0.586.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/google-cloud-sdk:0.586.0-debian-12-r0` |
+| google-cloud-sdk | `0.587.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/google-cloud-sdk:0.587.0-debian-12-r0` |
 | gotrue | `2.197.0-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/gotrue:2.197.0-debian-12-r1` |
 | gradle | `9.8.0-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/gradle:9.8.0-debian-12-r1` |
 | grafana-alloy | `1.20.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana-alloy:1.20.1-debian-12-r0` |
@@ -98,7 +98,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | grafana-tempo-query | `3.0.3-debian-12-r4, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana-tempo-query:3.0.3-debian-12-r4` |
 | grafana-tempo-vulture | `3.0.3-debian-12-r4, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana-tempo-vulture:3.0.3-debian-12-r4` |
 | grafana-tempo | `3.0.3-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana-tempo:3.0.3-debian-12-r3` |
-| grafana | `13.2.2-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana:13.2.2-debian-12-r2` |
+| grafana | `13.2.3-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/grafana:13.2.3-debian-12-r0` |
 | haproxy | `3.4.6-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/haproxy:3.4.6-debian-12-r0` |
 | harbor-adapter-trivy | `2.15.2-debian-12-r9, latest` | `docker pull ghcr.io/general-intelligence-systems/harbor-adapter-trivy:2.15.2-debian-12-r9` |
 | harbor-core | `2.15.2-debian-12-r19, latest` | `docker pull ghcr.io/general-intelligence-systems/harbor-core:2.15.2-debian-12-r19` |
@@ -128,6 +128,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | jwt-cli | `6.2.0-debian-12-r36, latest` | `docker pull ghcr.io/general-intelligence-systems/jwt-cli:6.2.0-debian-12-r36` |
 | kafka | `4.3.1-debian-12-r5, latest` | `docker pull ghcr.io/general-intelligence-systems/kafka:4.3.1-debian-12-r5` |
 | kaniko | `1.25.19-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/kaniko:1.25.19-debian-12-r3` |
+| keda | `2.21.0-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/keda:2.21.0-debian-12-r1` |
 | keycloak-config-cli | `6.5.1-debian-12-r7, latest` | `docker pull ghcr.io/general-intelligence-systems/keycloak-config-cli:6.5.1-debian-12-r7` |
 | keycloak | `26.7.4-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/keycloak:26.7.4-debian-12-r1` |
 | keydb | `6.3.4-debian-12-r48, latest` | `docker pull ghcr.io/general-intelligence-systems/keydb:6.3.4-debian-12-r48` |
@@ -162,8 +163,8 @@ Published to `ghcr.io/general-intelligence-systems`.
 | milvus | `3.0.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/milvus:3.0.2-debian-12-r1` |
 | mlflow | `3.16.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/mlflow:3.16.1-debian-12-r1` |
 | mongodb-exporter | `0.53.0-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/mongodb-exporter:0.53.0-debian-12-r3` |
-| mongodb-sharded | `8.3.11-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/mongodb-sharded:8.3.11-debian-12-r2` |
-| mongodb | `8.3.11-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/mongodb:8.3.11-debian-12-r2` |
+| mongodb-sharded | `8.3.11-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/mongodb-sharded:8.3.11-debian-12-r3` |
+| mongodb | `8.3.11-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/mongodb:8.3.11-debian-12-r3` |
 | moodle | `5.2.3-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/moodle:5.2.3-debian-12-r3` |
 | multus-cni | `4.3.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/multus-cni:4.3.1-debian-12-r1` |
 | mysqld-exporter | `0.20.0-debian-12-r5, latest` | `docker pull ghcr.io/general-intelligence-systems/mysqld-exporter:0.20.0-debian-12-r5` |
@@ -222,7 +223,7 @@ Published to `ghcr.io/general-intelligence-systems`.
 | ruby | `4.0.7-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/ruby:4.0.7-debian-12-r2` |
 | rust | `1.98.1-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/rust:1.98.1-debian-12-r3` |
 | schema-registry | `8.3.1-debian-12-r2, latest` | `docker pull ghcr.io/general-intelligence-systems/schema-registry:8.3.1-debian-12-r2` |
-| scylladb | `2026.3.1-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/scylladb:2026.3.1-debian-12-r1` |
+| scylladb | `2026.3.2-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/scylladb:2026.3.2-debian-12-r0` |
 | sealed-secrets-controller | `0.40.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/sealed-secrets-controller:0.40.0-debian-12-r0` |
 | sealed-secrets-kubeseal | `0.40.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/sealed-secrets-kubeseal:0.40.0-debian-12-r0` |
 | seaweedfs | `4.48.0-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/seaweedfs:4.48.0-debian-12-r0` |
@@ -260,4 +261,4 @@ Published to `ghcr.io/general-intelligence-systems`.
 | zipkin | `3.6.1-debian-12-r10, latest` | `docker pull ghcr.io/general-intelligence-systems/zipkin:3.6.1-debian-12-r10` |
 | zookeeper | `3.9.6-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/zookeeper:3.9.6-debian-12-r1` |
 
-_Last updated: 2026-09-29 04:43:08 UTC_
+_Last updated: 2026-09-30 04:23:29 UTC_
