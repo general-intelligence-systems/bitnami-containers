@@ -38,10 +38,10 @@ Published to `ghcr.io/general-intelligence-systems`.
 | cilium-proxy | `1.37.5-debian-12-r3, latest` | `docker pull ghcr.io/general-intelligence-systems/cilium-proxy:1.37.5-debian-12-r3` |
 | cilium | `1.20.2-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/cilium:1.20.2-debian-12-r1` |
 | clickhouse-backup | `2.8.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-backup:2.8.1-debian-12-r0` |
-| clickhouse-keeper | `26.8.15-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-keeper:26.8.15-debian-12-r0` |
+| clickhouse-keeper | `26.8.16-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-keeper:26.8.16-debian-12-r0` |
 | clickhouse-operator-metrics-exporter | `0.27.4-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-operator-metrics-exporter:0.27.4-debian-12-r0` |
 | clickhouse-operator | `0.27.4-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse-operator:0.27.4-debian-12-r0` |
-| clickhouse | `26.8.15-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse:26.8.15-debian-12-r0` |
+| clickhouse | `26.8.16-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/clickhouse:26.8.16-debian-12-r0` |
 | cloudnative-pg | `1.30.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/cloudnative-pg:1.30.1-debian-12-r0` |
 | cluster-autoscaler | `1.36.1-debian-12-r6, latest` | `docker pull ghcr.io/general-intelligence-systems/cluster-autoscaler:1.36.1-debian-12-r6` |
 | concourse | `8.3.1-debian-12-r0, latest` | `docker pull ghcr.io/general-intelligence-systems/concourse:8.3.1-debian-12-r0` |
@@ -265,4 +265,4 @@ Published to `ghcr.io/general-intelligence-systems`.
 | zipkin | `3.6.1-debian-12-r10, latest` | `docker pull ghcr.io/general-intelligence-systems/zipkin:3.6.1-debian-12-r10` |
 | zookeeper | `3.9.6-debian-12-r1, latest` | `docker pull ghcr.io/general-intelligence-systems/zookeeper:3.9.6-debian-12-r1` |
 
-_Last updated: 2026-10-03 04:13:28 UTC_
+_Last updated: 2026-10-04 04:41:44 UTC_
